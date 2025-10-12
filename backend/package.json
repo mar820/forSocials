@@ -1,0 +1,28 @@
+{
+  "name": "linkedin-ai-replies",
+  "version": "1.0.0",
+  "description": "Backend server for LinkedIn and X AI Replies extension",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.15.1",
+    "node-fetch": "^2.7.0",
+    "nodemailer": "^7.0.6",
+    "pino": "^7.11.0",
+    "stripe": "^19.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "pino-pretty": "^13.1.2"
+  }
+}

@@ -1,0 +1,260 @@
+/* General popup styling */
+body {
+  margin: 0;
+  font-family: "Inter", Arial, sans-serif;
+  background: #0f1a25;
+  color: #ffffff;
+  width: 320px;
+  min-height: 310px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+#app {
+  padding: 20px;
+  width: 100%;
+  height: 300px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+/* Headings */
+h3 {
+  color: #ffffff;
+  text-align: center;
+  /* margin-bottom: 50px; */
+  font-size: 18px;
+  font-weight: 600;
+}
+
+h2 {
+  color: #ffffff;
+  text-align: center;
+  /* margin-bottom: 50px; */
+  font-size: 20px;
+  font-weight: 600;
+}
+
+h3 strong {
+  color: #2563eb; /* blue accent */
+  font-size: 20px;
+
+}
+
+h2 strong {
+  color: #2563eb; /* blue accent */
+}
+
+p {
+  text-align: center;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+p strong{
+  color: #3468d8;
+  font-size: 18px;
+}
+
+.firstParagraph{
+  text-align: center;
+  color: #ffffff;
+  font-size: 14px;
+  margin-top: 40px;
+}
+
+.firstParagraph strong{
+  color: #3468d8;
+  font-size: 16px;
+}
+/* Buttons container */
+.container-holding-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+#back{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: #e5e7eb;
+  color: #111;
+  font-weight: 500;
+}
+
+#backAllPlan{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: #254c9a;
+  border: 1px solid #072444;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+#backAllPlan:hover{
+  background-color: #305bb1;
+}
+
+#logout{
+  background-color: #e5e7eb;
+  color: #111;
+  font-weight: 500;
+}
+
+.container-holding-input-login{
+  display: flex;
+  flex-direction: column;
+  row-gap: -10px;
+}
+
+.container-holding-buttons-login{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+
+.container-holding-input-signup{
+  display: flex;
+  flex-direction: column;
+  row-gap: -10px;
+}
+
+.container-holding-buttons-signup{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.container-holding-buttons-freePlan{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.container-holding-p-freePlan{
+  border-radius: 8px;
+  background-color: #94afe4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  row-gap: -10px;
+  height: 120px;
+}
+
+.container-holding-p-freePlan p{
+  color: #333;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 8px 0;
+  transition: color 0.2s;
+}
+
+.container-holding-p-freePlan p:hover {
+  color: #007bff;
+}
+
+
+.container-holding-allPlan{
+  border-radius: 8px;
+  border: 1px solid #023b79;
+  background-color: #03112c;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 8px;
+}
+
+.container-holding-allPlan button{
+  width: 150px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.container-holding-info{
+  border-radius: 8px;
+  background-color: #94afe4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-holding-info p {
+  color: #333; /* Darker text for contrast */
+  font-size: 18px; /* Slightly smaller for readability */
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 8px 0; /* Space between lines */
+  transition: color 0.2s;
+}
+
+.container-holding-info p:hover {
+  color: #007bff; /* Highlight on hover */
+}
+
+.container-holding-buttons-Plan{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.container-holding-buttons-Plan button{
+  width: 100px;
+  height: 30px;
+}
+
+
+/* Buttons */
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #1e4ed8;
+}
+
+button#backHome {
+  background: #e5e7eb;
+  color: #111;
+}
+
+button#backHome:hover {
+  background: #d1d5db;
+}
+
+/* Inputs */
+input {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  margin: 6px 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}

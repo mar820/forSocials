@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "LinkedIn smart AI replies",
+  "version": "1.0",
+  "description": "LinkedIn extension providing short and smart replies for easier and faster connection",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["https://api.openai.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.linkedin.com/*"],
+      "js": ["linkedIn/content.js", "linkedIn/comment.js"],
+      "css": ["linkedIn/style.css", "linkedIn/comment.css"]
+    },
+    {
+      "matches": [
+        "*://www.x.com/*",
+        "*://x.com/*"
+      ],
+      "js": ["X/content.js"],
+      "css": ["X/content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html"
+  }
+}

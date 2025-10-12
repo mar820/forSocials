@@ -1,0 +1,29 @@
+.ai-rewrite-button {
+  width: 70px;
+  height: 28px;
+  margin-left: 4px;
+  margin-right: 5px;
+  margin-top: 6px;
+  background: #0077b5;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ai-rewrite-button:hover {
+  background: #4377b2;
+  cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ai-rewrite-button {
+    background: #0077b5;
+    color: #e7f0fa;
+  }
+
+  .ai-rewrite-button:hover {
+    background: #4377b2;
+  }
+}
