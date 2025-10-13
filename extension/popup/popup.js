@@ -15,7 +15,7 @@ async function createStripePayment(plan){
     const { token } = await chrome.storage.local.get("token");
     if (!token) console.log("Token was not found");
 
-    const response = await fetch(`https://forsocials.com/createCheckoutSession`, {
+    const response = await fetch(`https://6yj7l2qc.up.railway.app/createCheckoutSession`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +36,7 @@ async function createStripePayment(plan){
 }
 
 async function fetchAndPrepareUserData(token) {
-  const response = await fetch("https://forsocials.com/me", {
+  const response = await fetch("https://6yj7l2qc.up.railway.app/me", {
     headers: { "Authorization": `Bearer ${token}` }
   });
 
@@ -134,7 +134,7 @@ function renderLogin(){
     const password = document.getElementById("password").value;
 
     try {
-      const response = await fetch("https://forsocials.com/login", {
+      const response = await fetch("https://6yj7l2qc.up.railway.app/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -201,7 +201,7 @@ function renderSignup(){
 
     try {
 
-      const response = await fetch("https://forsocials.com/signup", {
+      const response = await fetch("https://6yj7l2qc.up.railway.app/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -357,7 +357,7 @@ function renderLifeTimePlan(){
 
 async function logout() {
   try {
-    await fetch("https://forsocials.com/logout", {
+    await fetch("https://6yj7l2qc.up.railway.app/logout", {
       method: "POST",
       credentials: "include"
     });
