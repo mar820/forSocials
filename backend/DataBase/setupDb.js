@@ -1,10 +1,12 @@
 require('dotenv').config();
-const db = require('./db'); // make sure this points to your db.js connection
+const db = require('./db');
 
 async function createTables() {
+  let connection;
   try {
-    // Users table
-    await db.query(`
+    connection = await db.getConnection();
+
+    await connection.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         email VARCHAR(255) NOT NULL UNIQUE,
@@ -20,11 +22,9 @@ async function createTables() {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       );
     `);
-
     console.log('✅ Users table created or already exists');
 
-    // AI request logs table
-    await db.query(`
+    await connection.query(`
       CREATE TABLE IF NOT EXISTS ai_request_logs (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
@@ -33,13 +33,13 @@ async function createTables() {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
     `);
-
     console.log('✅ AI request logs table created or already exists');
 
-    process.exit(0);
   } catch (err) {
     console.error('❌ Error creating tables:', err);
-    process.exit(1);
+  } finally {
+    if (connection) connection.release();
+    process.exit(0);
   }
 }
 
