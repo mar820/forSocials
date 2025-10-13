@@ -44,7 +44,7 @@ router.post("/signup", async (req, res) => {
     );
 
     // 6️⃣ Send verification email
-    const verificationLink = `http://localhost:3000/verify?token=${verificationToken}`;
+    const verificationLink = `https://forsocials.com/verify?token=${verificationToken}`;
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
