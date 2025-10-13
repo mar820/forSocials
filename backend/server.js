@@ -13,7 +13,7 @@ const logger = require('./logger');
 const allowedOrigins = [
   "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
   "https://6yj7l2qc.up.railway.app",
-  "https://www.forsocials.com"
+  "https://forsocials.com"
 ];
 
 app.use(cors({
@@ -25,13 +25,12 @@ app.use(cors({
   },
   methods: ["GET","POST","OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
+  credentials: true
 }));
 
-// Handle preflight requests globally
-app.options("*", (req, res) => {
-  res.sendStatus(200);
-});
+// Preflight handler for all routes
+app.options("/*", (req, res) => res.sendStatus(200));
+
 
 
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
