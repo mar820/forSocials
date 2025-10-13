@@ -11,27 +11,28 @@ const authenticateToken = require("./middlewares/authenticateToken");
 const logger = require('./logger');
 
 const allowedOrigins = [
+  "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
   "https://6yj7l2qc.up.railway.app",
-  "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf"
+  "https://www.forsocials.com"
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-
-    const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
-
-    if (!isAllowed) {
-      console.error("❌ Blocked by CORS:", origin);
-      return callback(new Error("CORS policy does not allow access."), false);
-    }
-
-    return callback(null, true);
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); // allow extensions
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    console.error("❌ Blocked by CORS:", origin);
+    return callback(new Error("CORS not allowed"), false);
   },
-  methods: ["GET", "POST"],
+  methods: ["GET","POST","OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
+
+// Handle preflight requests globally
+app.options("*", (req, res) => {
+  res.sendStatus(200);
+});
+
 
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
