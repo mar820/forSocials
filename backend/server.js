@@ -29,7 +29,18 @@ app.use(cors({
 }));
 
 // Preflight handler for all routes
-app.options("/*", (req, res) => res.sendStatus(200));
+// ✅ Correct universal preflight handler for Express v5+
+app.options(/.*/, cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("CORS not allowed"), false);
+  },
+  credentials: true,
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 
 
 
