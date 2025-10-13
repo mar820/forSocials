@@ -32,7 +32,7 @@ app.use(cors({
 }));
 
 // ✅ 3. Handle preflight for all routes
-app.options("*", cors({
+app.options("/.*/", cors({
   origin: allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "OPTIONS"],
