@@ -1,4 +1,6 @@
-require('dotenv').config();
+// backend/DataBase/checkDb.js
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') }); // 👈 one level up
 const mysql = require('mysql2/promise');
 
 (async () => {
