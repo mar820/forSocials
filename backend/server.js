@@ -10,39 +10,16 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const authenticateToken = require("./middlewares/authenticateToken");
 const logger = require('./logger');
 
-// const allowedOrigins = [
-//   "https://6yj7l2qc.up.railway.app",
-//   "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf"
-// ];
-
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = [
-    "https://6yj7l2qc.up.railway.app",
-    "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf"
-  ];
-
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
-
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
   } catch (err) {
     console.error("⚠️ Webhook signature verification failed:", err.message);
     return res.sendStatus(400);
@@ -51,7 +28,6 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     const { userId, plan } = session.metadata;
-
     await db.query(
       "UPDATE users SET subscription_plan = ?, ai_requests_used_last_month = 0, subscription_active = 1 WHERE id = ?",
       [plan, userId]
@@ -61,9 +37,41 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
   res.sendStatus(200);
 });
 
-app.use(cookieParser());
+// ✅ 2. Everything else uses JSON parser (after webhook)
 app.use(express.json());
+app.use(cookieParser());
+
+// ✅ 3. CORS comes before routes
+const allowedOrigins = [
+  "https://6yj7l2qc.up.railway.app",
+  "https://forsocials.com",
+  "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      console.warn("❌ Blocked by CORS:", origin);
+      return callback(new Error("CORS not allowed"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
+// ✅ 4. Your routes go last
 app.use("/", authRoutes);
+
 
 app.post("/createCheckoutSession", authenticateToken, async (req, res) => {
   const { plan } = req.body;
