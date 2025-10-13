@@ -10,28 +10,32 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const authenticateToken = require("./middlewares/authenticateToken");
 const logger = require('./logger');
 
-const allowedOrigins = [
-  "https://6yj7l2qc.up.railway.app",
-  "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf"
-];
+// const allowedOrigins = [
+//   "https://6yj7l2qc.up.railway.app",
+//   "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf"
+// ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    "https://6yj7l2qc.up.railway.app",
+    "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf"
+  ];
 
-    const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
 
-    if (!isAllowed) {
-      console.error("❌ Blocked by CORS:", origin);
-      return callback(new Error("CORS policy does not allow access."), false);
-    }
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
 
-    return callback(null, true);
-  },
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-}));
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
