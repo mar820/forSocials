@@ -62,7 +62,7 @@ app.use(
   })
 );
 
-app.options("*", cors({
+app.options("/*", cors({
   origin: allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "OPTIONS"],
