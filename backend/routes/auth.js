@@ -53,10 +53,16 @@ router.post("/signup", async (req, res) => {
     // 6️⃣ Send verification email
     const verificationLink = `https://forsocials.com/verify?token=${verificationToken}`;
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"ReplyRiser" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Verify your email",
       html: `<p>Click <a href="${verificationLink}">here</a> to verify your email.</p>`
+    }, (err, info) => {
+      if (err) {
+        console.error("Failed to send verification email:", err);
+      } else {
+        console.log("Verification email sent:", info.response);
+      }
     });
 
     res.status(201).json({
