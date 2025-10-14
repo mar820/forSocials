@@ -3,25 +3,11 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const db = require("../DataBase/db");
-const nodeMailer = require("nodemailer");
+const { Resend } = require("resend");
 const jwt = require("jsonwebtoken");
 const authenticateToken = require("../middlewares/authenticateToken");
 
-const transporter = nodeMailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
-transporter.verify(function (error, success) {
-  if (error) {
-    console.error("Transporter verification failed:", error);
-  } else {
-    console.log("Server is ready to send emails");
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 router.post("/signup", async (req, res) => {
   try {
@@ -52,18 +38,18 @@ router.post("/signup", async (req, res) => {
 
     // 6️⃣ Send verification email
     const verificationLink = `https://forsocials.com/verify?token=${verificationToken}`;
-    await transporter.sendMail({
-      from: `"ReplyRiser" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Verify your email",
-      html: `<p>Click <a href="${verificationLink}">here</a> to verify your email.</p>`
-    }, (err, info) => {
-      if (err) {
-        console.error("Failed to send verification email:", err);
-      } else {
-        console.log("Verification email sent:", info.response);
-      }
-    });
+
+    try {
+      await resend.emails.send({
+        from: "ReplyRiser <noreply@forsocials.com>", // You can change this
+        to: email,
+        subject: "Verify your email",
+        html: `<p>Click <a href="${verificationLink}">here</a> to verify your email.</p>`
+      });
+      console.log(`✅ Verification email sent to ${email}`);
+    } catch (emailError) {
+      console.error("❌ Failed to send verification email:", emailError);
+    }
 
     res.status(201).json({
       message: "Signup successful! Check your email to verify your account."
