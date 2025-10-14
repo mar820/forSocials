@@ -7,11 +7,6 @@ const nodeMailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const authenticateToken = require("../middlewares/authenticateToken");
 
-
-router.options("/me", (req, res) => {
-  res.sendStatus(204); // preflight OK
-});
-
 const transporter = nodeMailer.createTransport({
   service: "gmail",
   auth: {
