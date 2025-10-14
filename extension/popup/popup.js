@@ -36,8 +36,7 @@ async function createStripePayment(plan){
 }
 
 async function fetchAndPrepareUserData(token) {
-  
-  console.log("Token received:", req.headers.authorization);
+
   const response = await fetch("https://forsocials.com/me", {
     headers: { "Authorization": `Bearer ${token}` }
   });
