@@ -12,7 +12,7 @@ const logger = require('./logger');
 
 
 const allowedOrigins = [
-  "https://6yj7l2qc.up.railway.app",
+  "https://forsocials.com",
   "https://forsocials.com",
   "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
 ];
@@ -87,8 +87,8 @@ app.post("/createCheckoutSession", authenticateToken, async (req, res) => {
       mode,
       payment_method_types: ["card"],
       line_items: [{ price: priceMap[plan], quantity: 1 }],
-      success_url: "https://6yj7l2qc.up.railway.app/success?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "https://6yj7l2qc.up.railway.app/cancel",
+      success_url: "https://forsocials.com/success?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "https://forsocials.com/cancel",
       metadata: { userId: user.id, plan }
     });
 
@@ -146,7 +146,7 @@ app.post("/getAiReply", async (req, res) => {
 
   try {
     // ✅ Fetch user info from your /me route
-    const userRes = await fetch("https://6yj7l2qc.up.railway.app/me", {
+    const userRes = await fetch("https://forsocials.com/me", {
       headers: { Authorization: `Bearer ${token}` }
     });
 
