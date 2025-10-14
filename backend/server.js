@@ -33,6 +33,25 @@ app.use((req, res, next) => {
   next();
 });
 
+// ✅ Explicitly handle all OPTIONS preflight requests
+app.options("*", (req, res) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    "https://6yj7l2qc.up.railway.app",
+    "https://forsocials.com",
+    "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
+  ];
+
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(200);
+});
+
+
 
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
