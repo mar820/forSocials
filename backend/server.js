@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 });
 
 // ✅ Explicitly handle all OPTIONS preflight requests
-app.options("*", (req, res) => {
+app.options(/.*/, (req, res) => {
   const origin = req.headers.origin;
   const allowedOrigins = [
     "https://6yj7l2qc.up.railway.app",
@@ -50,6 +50,7 @@ app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.sendStatus(200);
 });
+
 
 
 
