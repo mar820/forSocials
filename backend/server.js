@@ -20,14 +20,14 @@ const allowedOrigins = [
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
+    return res.sendStatus(204);
   }
 
   next();
@@ -50,8 +50,6 @@ app.use((req, res, next) => {
 //   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 //   res.sendStatus(200);
 // });
-
-
 
 
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
