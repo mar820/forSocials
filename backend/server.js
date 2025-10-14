@@ -146,6 +146,7 @@ app.post("/getAiReply", async (req, res) => {
 
   try {
     // ✅ Fetch user info from your /me route
+    console.log("Token received:", req.headers.authorization);
     const userRes = await fetch("https://forsocials.com/me", {
       headers: { Authorization: `Bearer ${token}` }
     });
