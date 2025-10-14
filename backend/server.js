@@ -22,9 +22,9 @@ app.use((req, res, next) => {
   if (origin && allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
   }
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
@@ -34,22 +34,22 @@ app.use((req, res, next) => {
 });
 
 // ✅ Explicitly handle all OPTIONS preflight requests
-app.options(/.*/, (req, res) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = [
-    "https://6yj7l2qc.up.railway.app",
-    "https://forsocials.com",
-    "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
-  ];
+// app.options(/.*/, (req, res) => {
+//   const origin = req.headers.origin;
+//   const allowedOrigins = [
+//     "https://6yj7l2qc.up.railway.app",
+//     "https://forsocials.com",
+//     "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
+//   ];
 
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.sendStatus(200);
-});
+//   if (origin && allowedOrigins.includes(origin)) {
+//     res.header("Access-Control-Allow-Origin", origin);
+//   }
+//   res.header("Access-Control-Allow-Credentials", "true");
+//   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.sendStatus(200);
+// });
 
 
 
