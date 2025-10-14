@@ -10,51 +10,26 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const authenticateToken = require("./middlewares/authenticateToken");
 const logger = require('./logger');
 
-// ✅ 3. CORS comes before routes
+
 const allowedOrigins = [
   "https://6yj7l2qc.up.railway.app",
   "https://forsocials.com",
   "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
 ];
 
-
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization"
-    );
-  }
-
-  // Preflight OPTIONS request
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(204); // No Content
-  }
-
-  next();
-});
-
-// ✅ Explicitly handle all OPTIONS preflight requests
-// app.options(/.*/, (req, res) => {
-//   const origin = req.headers.origin;
-//   const allowedOrigins = [
-//     "https://6yj7l2qc.up.railway.app",
-//     "https://forsocials.com",
-//     "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
-//   ];
-
-//   if (origin && allowedOrigins.includes(origin)) {
-//     res.header("Access-Control-Allow-Origin", origin);
-//   }
-//   res.header("Access-Control-Allow-Credentials", "true");
-//   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   res.sendStatus(200);
-// });
+app.use(cors({
+  origin: function(origin, callback) {
+    // for Chrome extension, origin might be undefined in some fetch contexts
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
