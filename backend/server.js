@@ -51,10 +51,10 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
+      if (!origin) return callback(null, true); // Allow non-browser tools like curl, server-side fetches
+      if (allowedOrigins.some(o => origin.startsWith(o))) return callback(null, true);
       console.warn("❌ Blocked by CORS:", origin);
-      return callback(new Error("CORS not allowed"));
+      callback(new Error("CORS not allowed"));
     },
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
@@ -62,12 +62,12 @@ app.use(
   })
 );
 
-app.options("/*", cors({
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+// app.options("/*", cors({
+//   origin: allowedOrigins,
+//   credentials: true,
+//   methods: ["GET", "POST", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+// }));
 
 // ✅ 4. Your routes go last
 app.use("/", authRoutes);
