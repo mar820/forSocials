@@ -10,6 +10,30 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const authenticateToken = require("./middlewares/authenticateToken");
 const logger = require('./logger');
 
+// ✅ 3. CORS comes before routes
+const allowedOrigins = [
+  "https://6yj7l2qc.up.railway.app",
+  "https://forsocials.com",
+  "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
+];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+
+
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
@@ -40,36 +64,6 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
 // ✅ 2. Everything else uses JSON parser (after webhook)
 app.use(express.json());
 app.use(cookieParser());
-
-// ✅ 3. CORS comes before routes
-const allowedOrigins = [
-  "https://6yj7l2qc.up.railway.app",
-  "https://forsocials.com",
-  "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
-];
-
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
-
-// app.options("/*", cors({
-//   origin: allowedOrigins,
-//   credentials: true,
-//   methods: ["GET", "POST", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-// }));
 
 // ✅ 4. Your routes go last
 app.use("/", authRoutes);
