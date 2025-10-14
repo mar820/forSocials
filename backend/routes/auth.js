@@ -15,6 +15,14 @@ const transporter = nodeMailer.createTransport({
   }
 });
 
+transporter.verify(function (error, success) {
+  if (error) {
+    console.error("Transporter verification failed:", error);
+  } else {
+    console.log("Server is ready to send emails");
+  }
+});
+
 router.post("/signup", async (req, res) => {
   try {
     const { email, password } = req.body;
