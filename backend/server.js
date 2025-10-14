@@ -13,7 +13,6 @@ const logger = require('./logger');
 
 const allowedOrigins = [
   "https://forsocials.com",
-  "https://forsocials.com",
   "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
 ];
 
