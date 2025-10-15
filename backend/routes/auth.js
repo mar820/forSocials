@@ -44,7 +44,7 @@ router.post("/signup", async (req, res) => {
 
     try {
 
-      let htmlContent = fs.readFileSync(path.join(__dirname, "../extension/verify.html"), "utf8");
+      let htmlContent = fs.readFileSync(path.join(__dirname, "../../extension/verify.html"), "utf8");
       htmlContent = htmlContent.replace("{{VERIFICATION_LINK}}", verificationLink);
 
 
