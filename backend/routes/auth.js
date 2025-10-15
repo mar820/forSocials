@@ -41,73 +41,69 @@ router.post("/signup", async (req, res) => {
 
     // 6️⃣ Send verification email
     const verificationLink = `https://forsocials.com/verify?token=${verificationToken}`;
+
+    let htmlContent = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Verify Your Email</title>
+      <style>
+        body {
+          background: #f8fafc;
+          color: #0f172a;
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+        }
+        .card {
+          background: white;
+          border-radius: 16px;
+          padding: 40px;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+          text-align: center;
+          max-width: 400px;
+        }
+        a.button {
+          display: inline-block;
+          margin-top: 25px;
+          background: #2563eb;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: 500;
+          transition: background 0.2s;
+        }
+        a.button:hover {
+          background: #1d4ed8;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <h2>Welcome to ForSocials!</h2>
+        <p>Please verify your email by clicking the button below:</p>
+        <a href="{{VERIFICATION_LINK}}" class="button">Verify Email</a>
+      </div>
+    </body>
+    </html>`;
+
+    // Replace placeholder with actual verification link
+    htmlContent = htmlContent.replace("{{VERIFICATION_LINK}}", verificationLink);
+
+    // Send email
     await resend.emails.send({
       from: "ForSocials <noreply@forsocials.com>",
       to: email,
       subject: "Verify your email",
-      html: `<!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>Email Verified</title>
-          <style>
-            body {
-              background: #f8fafc;
-              color: #0f172a;
-              font-family: 'Inter', system-ui, -apple-system, sans-serif;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              height: 100vh;
-              margin: 0;
-            }
-            .card {
-              background: white;
-              border-radius: 16px;
-              padding: 40px;
-              box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-              text-align: center;
-              max-width: 400px;
-            }
-            .icon {
-              font-size: 48px;
-              color: #22c55e;
-            }
-            h2 {
-              margin-top: 20px;
-              font-size: 1.5rem;
-            }
-            p {
-              color: #475569;
-            }
-            a.button {
-              display: inline-block;
-              margin-top: 25px;
-              background: #2563eb;
-              color: white;
-              padding: 12px 24px;
-              border-radius: 8px;
-              text-decoration: none;
-              font-weight: 500;
-              transition: background 0.2s;
-            }
-            a.button:hover {
-              background: #1d4ed8;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="card">
-            <div class="icon">✅</div>
-            <h2>Email Verified Successfully!</h2>
-            <p>Your account has been verified. You can now log in and start using ForSocials.</p>
-            <a href="https://forsocials.com/login" class="button">Go to Login</a>
-          </div>
-        </body>
-      </html>`
+      html: htmlContent
     });
+
 
     res.status(201).json({
       message: "Signup successful! Check your email to verify your account."
