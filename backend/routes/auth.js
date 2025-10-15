@@ -126,7 +126,62 @@ router.get("/verify", async (req, res) => {
 
     await db.query("UPDATE users SET is_verified = 1, verification_token = NULL WHERE verification_token = ?", [token]);
 
-    res.send("<h2>Email verified successfully! You can now log in.</h2>");
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Email Verified</title>
+          <style>
+            body {
+              background: #f8fafc;
+              color: #0f172a;
+              font-family: 'Inter', system-ui, -apple-system, sans-serif;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+              margin: 0;
+            }
+            .card {
+              background: white;
+              padding: 40px;
+              border-radius: 16px;
+              box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+              text-align: center;
+              max-width: 400px;
+            }
+            h2 {
+              color: #22c55e;
+            }
+            p {
+              margin: 20px 0;
+              color: #475569;
+            }
+            a.button {
+              display: inline-block;
+              padding: 12px 24px;
+              background: #2563eb;
+              color: white;
+              border-radius: 8px;
+              text-decoration: none;
+              font-weight: 500;
+            }
+            a.button:hover {
+              background: #1d4ed8;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <h2>✅ Email Verified Successfully!</h2>
+            <p>Your account has been verified. You can now log in and start using ForSocials.</p>
+            <a href="https://forsocials.com/login" class="button">Go to Login</a>
+          </div>
+        </body>
+      </html>
+    `);
   } catch (error) {
     res.status(500).send("Server error");
   }

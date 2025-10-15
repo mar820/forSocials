@@ -186,7 +186,17 @@ function renderSignup(){
     <h2>Sign <strong>Up</strong></h2>
     <div class="container-holding-input-signup">
       <input type="email" id="email" placeholder="Email"/>
-      <input type="password" id="password" placeholder="Password"/>
+      <div style="position: relative;">
+        <input type="password" id="password" placeholder="Password" style="padding-right: 30px;"/>
+        <span id="togglePassword" style="
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          user-select: none;
+        ">👁️</span>
+      </div>
     </div>
     <div class="container-holding-buttons-signup">
       <button id="submitSignup">Sign Up</button>
@@ -195,6 +205,19 @@ function renderSignup(){
   `;
 
   document.getElementById("backHome").addEventListener("click", renderHome);
+
+  const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
+  togglePassword.addEventListener("click", () => {
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      togglePassword.textContent = "🙈"; // Change icon when visible
+    } else {
+      passwordInput.type = "password";
+      togglePassword.textContent = "👁️";
+    }
+  });
+
   document.getElementById("submitSignup").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
