@@ -44,10 +44,9 @@ router.post("/signup", async (req, res) => {
 
     try {
 
-      const htmlContent = fs.readFileSync(
-        path.join(__dirname, "../extension/verify.html"),
-        "utf8"
-      );
+      let htmlContent = fs.readFileSync(path.join(__dirname, "../extension/verify.html"), "utf8");
+      htmlContent = htmlContent.replace("{{VERIFICATION_LINK}}", verificationLink);
+
 
       await resend.emails.send({
         from: "ForSocials <noreply@forsocials.com>",
