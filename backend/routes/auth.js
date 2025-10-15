@@ -6,6 +6,9 @@ const db = require("../DataBase/db");
 const { Resend } = require("resend");
 const jwt = require("jsonwebtoken");
 const authenticateToken = require("../middlewares/authenticateToken");
+const fs = require("fs");
+const path = require("path");
+
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -40,11 +43,18 @@ router.post("/signup", async (req, res) => {
     const verificationLink = `https://forsocials.com/verify?token=${verificationToken}`;
 
     try {
+
+      const htmlContent = fs.readFileSync(
+        path.join(__dirname, "../extension/verify.html"),
+        "utf8"
+      );
+
       await resend.emails.send({
-        from: "ReplyRiser <noreply@forsocials.com>", // You can change this
+        from: "ForSocials <noreply@forsocials.com>",
         to: email,
         subject: "Verify your email",
-        html: `<p>Click <a href="${verificationLink}">here</a> to verify your email.</p>`
+        html: htmlContent
+
       });
       console.log(`✅ Verification email sent to ${email}`);
     } catch (emailError) {
