@@ -43,18 +43,17 @@ router.post("/signup", async (req, res) => {
     const verificationLink = `https://forsocials.com/verify?token=${verificationToken}`;
 
     try {
-
-      let htmlContent = fs.readFileSync(path.join(__dirname, "../../extension/verify.html"), "utf8");
+      const htmlPath = path.join(__dirname, "../../extension/verify.html");
+      let htmlContent = fs.readFileSync(htmlPath, "utf8");
       htmlContent = htmlContent.replace("{{VERIFICATION_LINK}}", verificationLink);
-
 
       await resend.emails.send({
         from: "ForSocials <noreply@forsocials.com>",
         to: email,
         subject: "Verify your email",
         html: htmlContent
-
       });
+
       console.log(`✅ Verification email sent to ${email}`);
     } catch (emailError) {
       console.error("❌ Failed to send verification email:", emailError);
