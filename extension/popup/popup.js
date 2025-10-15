@@ -221,7 +221,7 @@ function renderSignup(){
       eyeIcon.style.fill = "#2563eb"; // optional color change
     } else {
       passwordInput.type = "password";
-      eyeIcon.style.fill = "none";
+      eyeIcon.style.fill = "black";
     }
   });
 
