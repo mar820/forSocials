@@ -177,7 +177,6 @@ router.get("/verify", async (req, res) => {
           <div class="card">
             <h2>✅ Email Verified Successfully!</h2>
             <p>Your account has been verified. You can now log in and start using ForSocials.</p>
-            <a href="https://forsocials.com/login" class="button">Go to Login</a>
           </div>
         </body>
       </html>

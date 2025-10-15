@@ -195,7 +195,13 @@ function renderSignup(){
           transform: translateY(-50%);
           cursor: pointer;
           user-select: none;
-        ">👁️</span>
+        ">
+          <!-- Eye SVG -->
+          <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </span>
       </div>
     </div>
     <div class="container-holding-buttons-signup">
@@ -209,12 +215,13 @@ function renderSignup(){
   const passwordInput = document.getElementById("password");
   const togglePassword = document.getElementById("togglePassword");
   togglePassword.addEventListener("click", () => {
+    const eyeIcon = document.getElementById("eyeIcon");
     if (passwordInput.type === "password") {
       passwordInput.type = "text";
-      togglePassword.textContent = "🙈"; // Change icon when visible
+      eyeIcon.style.fill = "#2563eb"; // optional color change
     } else {
       passwordInput.type = "password";
-      togglePassword.textContent = "👁️";
+      eyeIcon.style.fill = "none";
     }
   });
 
