@@ -1,52 +1,34 @@
+async function getAIReply(userComment){
+  const blocks = [];
+  if (userComment) blocks.push({ type: "text", text: userComment });
 
-async function getApiKey(){
-
-  if (!chrome.runtime || !chrome.runtime.sendMessage) return null;
+  const site = (() => {
+    const hostname = window.location.hostname;
+    if (hostname.includes("linkedin.com")) return "linkedin";
+    if (hostname.includes("x.com")) return "x";
+    return "unknown";
+  })();
 
   return new Promise((resolve) => {
-    chrome.runtime.sendMessage({action: "getApiKey"}, (response) => {
-      resolve(response.key || null);
+    chrome.runtime.sendMessage({ action: "getAiReply", blocks, platform: site }, (data) => {
+
+      if (!data) return resolve({ error: "No response" });
+
+      // ⚠️ Detect backend trial expiration
+      if (data.error && data.error.includes("Free trial expired")) {
+        resolve({ error: "trial_expired" });
+      } else if (data.error && data.error.includes("AI request limit")) {
+        resolve({ error: "limit_reached" });
+      } else if (!data?.choices) {
+        resolve({ error: "no_choices" });
+      } else {
+        const replies = data.choices[0].message.content
+          .split("\n")
+          .filter(line => line.trim() !== "");
+        resolve({ replies });
+      }
     });
   });
-}
-
-
-async function getAIReply(usersComment){
-
-  const apiKey = await getApiKey();
-
-    if (!apiKey) {
-    alert("OOPS, you might need to have a look at your API_Key.");
-  }
-
-
-  const message = `Rewrite the following LinkedIn comment to be more concise, professional, and engaging, while keeping the original meaning (1-2 sentences):`;
-
-  let usersMessage = [];
-
-  if (usersComment){
-    usersMessage.push({type: "text", text: usersComment});
-  }
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [
-        {role: "system", content: message},
-        {role: "user", content: usersMessage}
-      ],
-      n:1
-    })
-  });
-
-  const data = await response.json();
-  if(!data.choices) return [];
-  return data.choices[0].message.content.trim();
 }
 
 
@@ -77,12 +59,21 @@ async function addRewriteButton(postComment){
 
     button.innerText = "Rewriting...";
 
-    const rewritten = await getAIReply(userComment);
+    const { replies, error } = await getAIReply(userComment);
 
-    if (rewritten) {
-      if (commentBox.tagName === "TEXTAREA"){
-        commentBox.value = rewritten
-      }else{
+    if (error) {
+      if (error === "trial_expired") {
+        alert("⚠️ Your trial has expired. Please upgrade your account.");
+      } else if (error === "limit_reached") {
+        alert("⚠️ You’ve reached your AI usage limit. Try again later.");
+      } else {
+        alert("⚠️ AI Error: " + error);
+      }
+    } else if (replies && replies.length > 0) {
+      const rewritten = replies[0];
+      if (commentBox.tagName === "TEXTAREA") {
+        commentBox.value = rewritten;
+      } else {
         commentBox.textContent = rewritten;
       }
     }

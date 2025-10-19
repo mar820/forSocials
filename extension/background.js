@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
       console.log("🔑 checkLogin token:", token);
 
-      fetch("https://forsocials.com/me", {
+      fetch("https://api.forsocials.com/me", {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => {
@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       const token = result.token;
       console.log("🔑 Token for request:", token);
 
-      fetch("https://forsocials.com/getAiReply", {
+      fetch("https://api.forsocials.com/getAiReply", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,

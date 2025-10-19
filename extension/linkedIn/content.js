@@ -136,6 +136,7 @@ console.log("🚀 LinkedIn content script loaded");
       const observer = new MutationObserver(() => {
         document.querySelectorAll(".feed-shared-update-v2").forEach(post => {
           addReplyButton(post);
+          addRewriteButton(post);
         });
       });
       observer.observe(document.body, { childList: true, subtree: true });
