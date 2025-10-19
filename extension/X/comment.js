@@ -32,7 +32,7 @@ async function getAIReply(userComment){
 }
 
 async function addRewriteButtonX(tweetComposer) {
-  const toolbar = tweetComposer.querySelector('[data-testid="tweetButtonInline"]');
+  const toolbar = tweetComposer.querySelector('[data-testid="ScrollSnap-SwipeableList"]');
   if (!toolbar) return;
 
   if (toolbar.querySelector(".ai-rewrite-button")) return; // avoid duplicates
@@ -43,7 +43,7 @@ async function addRewriteButtonX(tweetComposer) {
   button.classList.add("ai-rewrite-button");
 
   button.onclick = async () => {
-    const tweetBox = document.querySelector('[data-testid="tweetTextarea_0"], [data-testid="tweetTextarea_1"]');
+    const tweetBox = tweetComposer.querySelector('[data-testid="tweetTextarea_0"], [data-testid="tweetTextarea_1"]');
     if (!tweetBox) {
       alert("Could not find the tweet box!");
       return;
