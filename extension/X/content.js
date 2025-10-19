@@ -84,29 +84,30 @@
 
         console.log("Found Images:", images);
 
-        const replies = await getAiReply(tweetText, quotedText, images);
+        const aiResult = await getAiReply(postText, imageUrl);
 
 
-        if (replies.error === "trial_expired") {
-          button.innerText = "🚫 Trial expired — Upgrade to use AI";
-          button.style.opacity = "0.6";
-          button.style.cursor = "not-allowed";
-          button.disabled = true;
-          return;
+        if (aiResult.error) {
+          switch(aiResult.error) {
+            case "trial_expired":
+              button.innerText = "🚫 Trial expired — Upgrade to use AI";
+              button.style.opacity = "0.6";
+              button.style.cursor = "not-allowed";
+              button.disabled = true;
+              return;
+            case "limit_reached":
+              button.innerText = "⚠️ Plan limit reached — Upgrade";
+              button.style.opacity = "0.6";
+              button.disabled = true;
+              return;
+            default:
+              button.innerText = "❌ AI failed — Try again";
+              button.disabled = false;
+              return;
+          }
         }
 
-        if (replies.error === "limit_reached") {
-          button.innerText = "⚠️ Plan limit reached — Upgrade";
-          button.style.opacity = "0.6";
-          button.disabled = true;
-          return;
-        }
-
-        if (replies.error) {
-          button.innerText = "❌ AI failed — Try again";
-          button.disabled = false;
-          return;
-        }
+        const replies = aiResult.replies || [];
 
 
         let replyContainer = postElement.querySelector(".ai-replies-box");
