@@ -179,6 +179,7 @@
     const observer = new MutationObserver(() => {
       document.querySelectorAll("article").forEach(post => {
         addReplyButton(post);
+        addRewriteButtonX(post);
       });
     });
 

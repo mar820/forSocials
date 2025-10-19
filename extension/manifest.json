@@ -19,8 +19,8 @@
         "*://www.x.com/*",
         "*://x.com/*"
       ],
-      "js": ["X/content.js"],
-      "css": ["X/content.css"]
+      "js": ["X/content.js", "X/comment.js"],
+      "css": ["X/content.css", "X/comment.css"]
     }
   ],
   "action": {
