@@ -84,7 +84,7 @@
 
         console.log("Found Images:", images);
 
-        const aiResult = await getAiReply(postText, imageUrl);
+        const aiResult = await getAiReply(tweetText, quotedText, images);
 
 
         if (aiResult.error) {
