@@ -178,12 +178,15 @@
 
 
     const observer = new MutationObserver(() => {
-      document.querySelectorAll("article").forEach(post => {
-        addReplyButton(post);
-        addRewriteButtonX(post);
+      document.querySelectorAll("article").forEach(post => addReplyButton(post));
+
+      document.querySelectorAll('[data-testid="tweetTextarea_0"], [data-testid="tweetTextarea_1"]').forEach(textarea => {
+        const composer = textarea.closest('div[data-testid="tweetTextarea_0"], div[data-testid="tweetTextarea_1"], form, div');
+        if (composer) addRewriteButtonX(composer);
       });
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
+
   });
 })();
