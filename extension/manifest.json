@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "LinkedIn extension providing short and smart replies for easier and faster connection",
   "permissions": ["activeTab", "scripting", "storage"],
-  "host_permissions": ["https://api.openai.com/*"],
+  "host_permissions": ["https://api.openai.com/*", "https://api.4socials.com/*"],
   "background": {
     "service_worker": "background.js"
   },

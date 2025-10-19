@@ -31,8 +31,17 @@ async function getAIReply(userComment){
   });
 }
 
+async function waitForToolbar(container) {
+  for (let i = 0; i < 10; i++) {
+    const toolbar = container.querySelector('[data-testid="ScrollSnap-SwipeableList"]');
+    if (toolbar) return toolbar;
+    await new Promise(r => setTimeout(r, 300));
+  }
+  return null;
+}
+
 async function addRewriteButtonX(tweetComposer) {
-  const toolbar = tweetComposer.querySelector('[data-testid="ScrollSnap-SwipeableList"]');
+  const toolbar = await waitForToolbar(tweetComposer);
   if (!toolbar) return;
 
   if (toolbar.querySelector(".ai-rewrite-button")) return; // avoid duplicates
@@ -71,8 +80,8 @@ async function addRewriteButtonX(tweetComposer) {
       const rewritten = replies[0];
 
       tweetBox.focus();
-      document.execCommand("selectAll", false, null);
-      document.execCommand("insertText", false, rewritten);
+      tweetBox.innerText = rewritten;
+      tweetBox.dispatchEvent(new InputEvent("input", { bubbles: true }));
     }
 
     button.innerText = "Rewrite ✍️";
