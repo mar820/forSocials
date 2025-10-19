@@ -32,9 +32,9 @@ async function getAIReply(userComment){
 }
 
 async function addRewriteButtonX(tweetComposer) {
-  const toolbar = tweetComposer.querySelector('[data-testid="ScrollSnap-SwipeableList"]');
-
+  const toolbar = tweetComposer.querySelector('[data-testid="tweetButtonInline"]');
   if (!toolbar) return;
+
   if (toolbar.querySelector(".ai-rewrite-button")) return; // avoid duplicates
 
   const button = document.createElement("button");
