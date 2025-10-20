@@ -56,7 +56,7 @@ async function addRewriteButtonX(tweetComposer) {
   const toolbar = await waitForToolbar(tweetComposer);
   if (!toolbar) return;
 
-  if (toolbar.querySelector(".ai-rewrite-button")) return; // avoid duplicates
+  if (toolbar.querySelector(".ai-rewrite-button")) return;
 
   const button = document.createElement("button");
   button.type = "button";
@@ -68,14 +68,15 @@ async function addRewriteButtonX(tweetComposer) {
 
   button.onclick = async () => {
 
+    const tweetBox = document.querySelector('[data-testid^="tweetTextarea"] div[contenteditable="true"]');
+    console.log([...tweetBox.textContent].map(c => c.charCodeAt(0)));
+
     const userComment = tweetBox.tagName === "TEXTAREA" ? tweetBox.value.trim() : tweetBox.textContent.trim();
 
     if (!userComment) {
       alert("Please make sure you already have a comment writen!");
       return;
     }
-
-    button.innerText = "Rewriting...";
 
     const { replies, error } = await getAIReply(userComment);
 
@@ -100,6 +101,8 @@ async function addRewriteButtonX(tweetComposer) {
       }
     }
     else if (replies && replies.length > 0) {
+      button.innerText = "Rewriting...";
+
       const rewritten = replies[0];
 
       tweetBox.focus();
