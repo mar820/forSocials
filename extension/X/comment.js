@@ -76,6 +76,8 @@ async function addRewriteButtonX(tweetComposer) {
       return;
     }
 
+    button.disabled = false;
+
     button.innerText = "Rewriting...";
 
     const { replies, error } = await getAIReply(userComment);
