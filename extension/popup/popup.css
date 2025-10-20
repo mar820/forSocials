@@ -25,7 +25,6 @@ body {
 h3 {
   color: #ffffff;
   text-align: center;
-  /* margin-bottom: 50px; */
   font-size: 18px;
   font-weight: 600;
 }
@@ -33,19 +32,18 @@ h3 {
 h2 {
   color: #ffffff;
   text-align: center;
-  /* margin-bottom: 50px; */
   font-size: 20px;
   font-weight: 600;
 }
 
 h3 strong {
-  color: #2563eb; /* blue accent */
+  color: #2563eb;
   font-size: 20px;
 
 }
 
 h2 strong {
-  color: #2563eb; /* blue accent */
+  color: #2563eb;
 }
 
 p {
@@ -130,7 +128,8 @@ p strong{
   gap: 10px;
 }
 
-.container-holding-buttons-freePlan{
+/* ---------------------------------------------- */
+/* .container-holding-buttons-freePlan{
   display: flex;
   justify-content: center;
   gap: 10px;
@@ -159,8 +158,56 @@ p strong{
 
 .container-holding-p-freePlan p:hover {
   color: #007bff;
+} */
+
+.container-holding-buttons-freePlan {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
 }
 
+.container-holding-p-freePlan {
+  border-radius: 12px;
+  background: linear-gradient(135deg, #a5bff2 0%, #c7d8f8 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 90%;
+  max-width: 340px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.container-holding-p-freePlan:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.container-holding-p-freePlan p {
+  color: #222;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 6px 0;
+  transition: color 0.2s ease;
+}
+
+.container-holding-p-freePlan p strong {
+  color: #004aad;
+  font-weight: 600;
+}
+
+.container-holding-p-freePlan p:hover {
+  color: #0056d6;
+}
+
+/* ---------------------------------------------- */
 
 .container-holding-allPlan{
   border-radius: 8px;
