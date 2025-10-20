@@ -1,3 +1,5 @@
+console.log("✅ Content script loaded for X!");
+
 async function getAIReply(userComment){
   const blocks = [];
   if (userComment) blocks.push({ type: "text", text: userComment });

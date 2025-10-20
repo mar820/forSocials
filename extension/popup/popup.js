@@ -121,7 +121,23 @@ function renderLogin(){
     <h2>Log <strong>In</strong></h2>
     <div class="container-holding-input-login">
       <input type="email" id="email" placeholder="Email"/>
-      <input type="password" id="password" placeholder="Password"/>
+      <div style="position: relative;">
+        <input type="password" id="password" placeholder="Password" style="padding-right: 30px;"/>
+        <span id="togglePassword" style="
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          user-select: none;
+        ">
+          <!-- Eye SVG -->
+          <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </span>
+      </div>
     </div>
     <div class="container-holding-buttons-login">
       <button id="submitLogin">Log In</button>
@@ -130,6 +146,20 @@ function renderLogin(){
   `;
 
   document.getElementById("backHome").addEventListener("click", renderHome);
+
+  const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
+  togglePassword.addEventListener("click", () => {
+    const eyeIcon = document.getElementById("eyeIcon");
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      eyeIcon.style.fill = "#2563eb"; // optional color change
+    } else {
+      passwordInput.type = "password";
+      eyeIcon.style.fill = "black";
+    }
+  });
+
   document.getElementById("submitLogin").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;

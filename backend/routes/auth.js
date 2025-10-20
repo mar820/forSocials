@@ -243,15 +243,14 @@ router.get("/me", authenticateToken, async (req, res) => {
       const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
       const minutes = totalMinutes % 60;
 
-      // Format as DD:HH:MM
-      timeLeft = `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+      timeLeft = `${days}d ${hours}h ${minutes}m`;
     }
 
     const usedRequests = countResult[0].used;
 
         res.json({
       ...rows[0],
-      ai_requests_used_last_month: usedRequests,  // ✅ send to frontend
+      ai_requests_used_last_month: usedRequests,
       time_left_for_ai_requests: timeLeft
     });
   } catch (err) {
