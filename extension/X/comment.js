@@ -62,8 +62,6 @@ async function addRewriteButtonX(tweetComposer) {
   button.type = "button";
   button.innerText = "Rewrite ✍️";
   button.classList.add("ai-rewrite-button");
-  button.disabled = true; // start disabled
-  button.style.opacity = 0.5;
 
   const tweetBox = tweetComposer.querySelector('[data-testid^="tweetTextarea"]') || document.querySelector('[data-testid^="tweetTextarea"]');
   if (!tweetBox) return;
@@ -75,8 +73,6 @@ async function addRewriteButtonX(tweetComposer) {
       alert("Please make sure you already have a comment writen!");
       return;
     }
-
-    button.disabled = false;
 
     button.innerText = "Rewriting...";
 
