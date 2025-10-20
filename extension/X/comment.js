@@ -78,14 +78,15 @@ async function addRewriteButtonX(tweetComposer) {
     button.style.cursor = hasText ? 'pointer' : 'not-allowed';
   }
 
+  tweetBox.addEventListener('input', updateButtonState);
+  updateButtonState();
+
   button.onclick = async () => {
 
     const userComment = tweetBox.innerText.trim();
     if (!userComment) {
       alert("Please type something before rewriting!");
-      button.style.opacity = "0.6";
-      button.style.cursor = "not-allowed";
-      button.disabled = true;
+      updateButtonState();
       return;
     }
 
@@ -143,7 +144,6 @@ async function addRewriteButtonX(tweetComposer) {
       });
 
       tweetBox.dispatchEvent(inputEvent);
-      tweetBox.style.display = "none";
     }
 
     button.innerText = "Rewrite ✍️";
