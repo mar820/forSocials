@@ -77,9 +77,12 @@ async function addRewriteButtonX(tweetComposer) {
   }
 
   tweetBox.addEventListener('input', updateButtonState);
-  updateButtonState(); // initial check
+  updateButtonState();
 
   button.onclick = async () => {
+
+    if (button.disabled) return;
+
     const userComment = tweetBox.innerText.trim();
     if (!userComment) {
       alert("Please type something before rewriting!");
@@ -102,14 +105,14 @@ async function addRewriteButtonX(tweetComposer) {
       const rewritten = replies[0];
 
       tweetBox.focus();
+      document.execCommand('selectAll', false, null); // select everything
+      document.execCommand('insertText', false, rewritten); // replace with new text
+
       tweetBox.dispatchEvent(new InputEvent('beforeinput', {
         bubbles: true,
         cancelable: true,
         inputType: 'deleteContent',
       }));
-
-      // Insert new text via execCommand
-      document.execCommand('insertText', false, rewritten);
 
       // Fire input event to make React re-render
       tweetBox.dispatchEvent(new InputEvent('input', {
