@@ -78,9 +78,6 @@ async function addRewriteButtonX(tweetComposer) {
     button.style.cursor = hasText ? 'pointer' : 'not-allowed';
   }
 
-  tweetBox.addEventListener('input', updateButtonState);
-  updateButtonState(); // initial check
-
   button.onclick = async () => {
 
     if (button.disabled) return;
@@ -92,6 +89,8 @@ async function addRewriteButtonX(tweetComposer) {
       return;
     }
 
+    updateButtonState();
+
 
     button.innerText = "Rewriting...";
 
@@ -100,8 +99,10 @@ async function addRewriteButtonX(tweetComposer) {
     if (error) {
       if (error === "trial_expired") {
         alert("⚠️ Your trial has expired. Please upgrade your account.");
+        button.disabled = true;
       } else if (error === "limit_reached") {
         alert("⚠️ You’ve reached your AI usage limit. Try again later.");
+        button.disabled = true;
       } else {
         alert("⚠️ AI Error: " + error);
       }
