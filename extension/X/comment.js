@@ -70,14 +70,13 @@ async function addRewriteButtonX(tweetComposer) {
 
   // Update button state based on textarea content
   function updateButtonState() {
-    const hasText = tweetBox.innerText.trim().length > 0;
+    const text = tweetBox.innerText.replace(/\s+/g, '').trim(); // remove all whitespace
+    const hasText = text.length > 0;
+
     button.disabled = !hasText;
     button.style.opacity = hasText ? 1 : 0.5;
     button.style.cursor = hasText ? 'pointer' : 'not-allowed';
   }
-
-  tweetBox.addEventListener('input', updateButtonState);
-  updateButtonState();
 
   button.onclick = async () => {
 
@@ -86,6 +85,7 @@ async function addRewriteButtonX(tweetComposer) {
     const userComment = tweetBox.innerText.trim();
     if (!userComment) {
       alert("Please type something before rewriting!");
+      updateButtonState();
       return;
     }
 
@@ -105,22 +105,33 @@ async function addRewriteButtonX(tweetComposer) {
       const rewritten = replies[0];
 
       tweetBox.focus();
-      document.execCommand('selectAll', false, null); // select everything
-      document.execCommand('insertText', false, rewritten); // replace with new text
+      tweetBox.click();
 
-      tweetBox.dispatchEvent(new InputEvent('beforeinput', {
+      document.execCommand("selectAll", false, null);
+      document.execCommand("insertText", false, rewritten);
+
+      // Fire an InputEvent
+      const inputEvent = new InputEvent("input", {
         bubbles: true,
         cancelable: true,
-        inputType: 'deleteContent',
-      }));
-
-      // Fire input event to make React re-render
-      tweetBox.dispatchEvent(new InputEvent('input', {
-        bubbles: true,
-        cancelable: true,
-        inputType: 'insertText',
+        inputType: "insertText",
         data: rewritten,
-      }));
+      });
+      tweetBox.dispatchEvent(inputEvent);
+
+      // Fire key events to trigger React internal state
+      ['keydown', 'keyup', 'keypress'].forEach(type => {
+        const e = new KeyboardEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          key: 'a',
+          code: 'KeyA',
+        });
+        tweetBox.dispatchEvent(e);
+      });
+
+      tweetBox.dispatchEvent(inputEvent);
+      tweetBox.style.display = "none";
     }
 
     button.innerText = "Rewrite ✍️";
