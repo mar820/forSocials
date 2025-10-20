@@ -1,4 +1,4 @@
-.ai-rewrite-button {
+.ai-rewrite-button1 {
   width: 70px;
   height: 28px;
   margin-left: 4px;
@@ -13,7 +13,7 @@
   font-weight: 500;
 }
 
-.ai-rewrite-button:hover {
+.ai-rewrite-button1:hover {
   background: #4377b2;
   cursor: pointer;
 }

@@ -36,12 +36,12 @@ async function addRewriteButton(postComment){
   const container = postComment.querySelector(".comments-comment-box__detour-container");
 
   if (!container) return;
-  if (container.querySelector(".ai-rewrite-button")) return;
+  if (container.querySelector(".ai-rewrite-button1")) return;
 
   const button = document.createElement("button");
   button.type = "button";
   button.innerText = "Rewrite ✍️";
-  button.classList.add("ai-rewrite-button");
+  button.classList.add("ai-rewrite-button1");
 
 
   // Async because everything that happens inside the button, happens when the user clicks it.
@@ -64,18 +64,18 @@ async function addRewriteButton(postComment){
     if (error) {
       switch(error) {
         case "trial_expired":
-          button.innerText = "🚫 Trial expired — Upgrade to use AI";
+          alert("🚫 Trial expired — Upgrade to use AI");
           button.style.opacity = "0.6";
           button.style.cursor = "not-allowed";
           button.disabled = true;
           return;
         case "limit_reached":
-          button.innerText = "⚠️ Plan limit reached — Upgrade";
+          alert("⚠️ Plan limit reached — Upgrade to re-write");
           button.style.opacity = "0.6";
           button.disabled = true;
           return;
         default:
-          button.innerText = "❌ AI failed — Try again";
+          alert("❌ AI failed — Try again");
           button.disabled = false;
           return;
       }
