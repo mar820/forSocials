@@ -1,5 +1,3 @@
-console.log("✅ Content script loaded for X!");
-
 async function getAIReply(userComment){
   const blocks = [];
   if (userComment) blocks.push({ type: "text", text: userComment });
@@ -51,14 +49,12 @@ async function waitForToolbar(container) {
     await new Promise(r => setTimeout(r, 1000));
   }
 
-  console.log("❌ Still no toolbar found near composer:", container);
   return null;
 }
 
 async function addRewriteButtonX(tweetComposer) {
   const toolbar = await waitForToolbar(tweetComposer);
   if (!toolbar) return;
-  console.log("Toolbar found?", !!toolbar, tweetComposer);
 
   if (toolbar.querySelector(".ai-rewrite-button")) return; // avoid duplicates
 
@@ -68,7 +64,8 @@ async function addRewriteButtonX(tweetComposer) {
   button.classList.add("ai-rewrite-button");
 
   button.onclick = async () => {
-    const tweetBox = tweetComposer.querySelector('[data-testid="tweetTextarea_0"], [data-testid="tweetTextarea_1"]');
+    let tweetBox = tweetComposer.querySelector('[data-testid^="tweetTextarea"]') || document.querySelector('[data-testid^="tweetTextarea"]');
+    // const tweetBox = tweetComposer.querySelector('[data-testid="tweetTextarea_0"], [data-testid="tweetTextarea_1"]');
     if (!tweetBox) {
       alert("Could not find the tweet box!");
       return;

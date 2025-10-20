@@ -2,8 +2,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 90px;
-  height: 30px;
+  width: 95px;
+  height: 38px;
   margin-left: 4px;
   margin-right: 5px;
   margin-top: 6px;
@@ -13,7 +13,7 @@
   border-radius: 10px;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .ai-rewrite-button:hover {
