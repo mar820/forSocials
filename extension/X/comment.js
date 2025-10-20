@@ -93,8 +93,30 @@ async function addRewriteButtonX(tweetComposer) {
       const rewritten = replies[0];
 
       tweetBox.focus();
-      tweetBox.innerText = rewritten;
-      tweetBox.dispatchEvent(new InputEvent("input", { bubbles: true }));
+
+      // Clear old text properly
+      document.execCommand("selectAll", false, null);
+      document.execCommand("insertText", false, rewritten);
+
+      // Trigger React’s internal update system
+      const inputEvent = new InputEvent("input", {
+        bubbles: true,
+        cancelable: true,
+        inputType: "insertText",
+        data: rewritten,
+      });
+      tweetBox.dispatchEvent(inputEvent);
+
+      // Also fire keyboard events (Draft.js sometimes requires them)
+      ["keydown", "keypress", "keyup"].forEach((type) => {
+        const e = new KeyboardEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          key: "a",
+          code: "KeyA",
+        });
+        tweetBox.dispatchEvent(e);
+      });
     }
 
     button.innerText = "Rewrite ✍️";
