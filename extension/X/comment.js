@@ -80,8 +80,6 @@ async function addRewriteButtonX(tweetComposer) {
 
   button.onclick = async () => {
 
-    if (button.disabled) return;
-
     const userComment = tweetBox.innerText.trim();
     if (!userComment) {
       alert("Please type something before rewriting!");
