@@ -34,21 +34,24 @@ async function getAIReply(userComment){
 }
 
 async function waitForToolbar(container) {
-  const possibleSelectors = [
+  const selectors = [
     '[data-testid="toolBar"]',
     'div[role="group"][aria-label*="Add"]',
-    '[data-testid="ScrollSnap-SwipeableList"]' // fallback
+    'div[data-testid="toolBar"]',
+    '[data-testid="ScrollSnap-SwipeableList"]'
   ];
 
   for (let i = 0; i < 15; i++) {
-    for (const sel of possibleSelectors) {
-      const toolbar = container.querySelector(sel);
+    for (const sel of selectors) {
+      const toolbar = container.closest("form")?.querySelector(sel)
+                    || container.parentElement?.querySelector(sel)
+                    || document.querySelector(sel);
       if (toolbar) return toolbar;
     }
     await new Promise(r => setTimeout(r, 300));
   }
 
-  console.log("❌ No toolbar found in composer", container);
+  console.log("❌ Still no toolbar found near composer:", container);
   return null;
 }
 
