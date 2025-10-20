@@ -1,5 +1,8 @@
 .ai-rewrite-button1 {
-  width: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75px;
   height: 28px;
   margin-left: 4px;
   margin-right: 5px;
