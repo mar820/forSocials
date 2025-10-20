@@ -78,6 +78,9 @@ async function addRewriteButtonX(tweetComposer) {
     button.style.cursor = hasText ? 'pointer' : 'not-allowed';
   }
 
+  tweetBox.addEventListener('input', updateButtonState);
+  updateButtonState(); // initial check
+
   button.onclick = async () => {
 
     if (button.disabled) return;
@@ -88,8 +91,6 @@ async function addRewriteButtonX(tweetComposer) {
       updateButtonState();
       return;
     }
-
-    updateButtonState();
 
 
     button.innerText = "Rewriting...";
