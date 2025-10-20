@@ -52,17 +52,25 @@ async function waitForToolbar(container) {
   return null;
 }
 
-
-function updateButtonState() {
-  const text = tweetBox.innerText.replace(/[\s\u200B]+/g, '').trim();
-  const hasText = text.length > 0;
-
-  button.disabled = !hasText;
-  button.style.opacity = hasText ? 1 : 0.5;
-  button.style.cursor = hasText ? 'pointer' : 'not-allowed';
+function isTweetBoxEmpty(tweetBox) {
+  // Get the visible text and remove all whitespace + zero-width spaces
+  const text = tweetBox.innerText.replace(/[\s\u200B]+/g, '');
+  return text.length === 0;
 }
 
+function updateButtonState() {
+  const empty = isTweetBoxEmpty(tweetBox);
+  button.disabled = empty;
+  button.style.opacity = empty ? 0.5 : 1;
+  button.style.cursor = empty ? 'not-allowed' : 'pointer';
+}
+
+// Listen to all changes in the tweet box
 tweetBox.addEventListener('input', updateButtonState);
+tweetBox.addEventListener('paste', updateButtonState);
+tweetBox.addEventListener('keydown', updateButtonState);
+
+// Initial check
 updateButtonState();
 
 
@@ -82,9 +90,9 @@ async function addRewriteButtonX(tweetComposer) {
 
   button.onclick = async () => {
 
-    const userComment = tweetBox.innerText.replace(/[\s\u200B]+/g, '').trim();
-    if (!userComment) {
-      alert("Please make sure you already have a comment writen!");
+    const userComment = tweetBox.innerText.trim();
+    if (isTweetBoxEmpty(tweetBox)) {
+      alert("Please make sure you already have a comment written!");
       return;
     }
 
