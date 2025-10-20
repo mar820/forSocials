@@ -68,25 +68,11 @@ async function addRewriteButtonX(tweetComposer) {
   const tweetBox = tweetComposer.querySelector('[data-testid^="tweetTextarea"]') || document.querySelector('[data-testid^="tweetTextarea"]');
   if (!tweetBox) return;
 
-  // Update button state based on textarea content
-  function updateButtonState() {
-    const text = tweetBox.innerText.replace(/\s+/g, '').trim(); // remove all whitespace
-    const hasText = text.length > 0;
-
-    button.disabled = !hasText;
-    button.style.opacity = hasText ? 1 : 0.5;
-    button.style.cursor = hasText ? 'pointer' : 'not-allowed';
-  }
-
-  tweetBox.addEventListener('input', updateButtonState);
-  updateButtonState();
-
   button.onclick = async () => {
 
     const userComment = tweetBox.innerText.trim();
     if (!userComment) {
-      alert("Please type something before rewriting!");
-      updateButtonState();
+      alert("Please make sure you already have a comment writen!");
       return;
     }
 
