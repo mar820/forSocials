@@ -85,28 +85,37 @@ async function addRewriteButtonX(tweetComposer) {
     const userComment = tweetBox.innerText.trim();
     if (!userComment) {
       alert("Please type something before rewriting!");
-      updateButtonState();
+      button.style.opacity = "0.6";
+      button.style.cursor = "not-allowed";
+      button.disabled = true;
       return;
     }
-
-    updateButtonState();
-
 
     button.innerText = "Rewriting...";
 
     const { replies, error } = await getAIReply(userComment);
 
+
     if (error) {
-      if (error === "trial_expired") {
-        alert("⚠️ Your trial has expired. Please upgrade your account.");
-        button.disabled = true;
-      } else if (error === "limit_reached") {
-        alert("⚠️ You’ve reached your AI usage limit. Try again later.");
-        button.disabled = true;
-      } else {
-        alert("⚠️ AI Error: " + error);
+      switch(error) {
+        case "trial_expired":
+          button.innerText = "🚫 Trial expired — Upgrade to use AI";
+          button.style.opacity = "0.6";
+          button.style.cursor = "not-allowed";
+          button.disabled = true;
+          return;
+        case "limit_reached":
+          button.innerText = "⚠️ Plan limit reached — Upgrade";
+          button.style.opacity = "0.6";
+          button.disabled = true;
+          return;
+        default:
+          button.innerText = "❌ AI failed — Try again";
+          button.disabled = false;
+          return;
       }
-    } else if (replies && replies.length > 0) {
+    }
+    else if (replies && replies.length > 0) {
       const rewritten = replies[0];
 
       tweetBox.focus();
