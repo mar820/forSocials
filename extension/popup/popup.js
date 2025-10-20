@@ -303,7 +303,6 @@ function renderFreePlan(remaining, timeLeft){
 
   document.getElementById("logout").addEventListener("click", logout);
   document.getElementById("upgrade").addEventListener("click", renderAllPlan);
-
 }
 
 function renderAllPlan(){
@@ -320,10 +319,10 @@ function renderAllPlan(){
     <button id="backAllPlan">Back</button>
   `;
 
-  document.getElementById("starter").addEventListener("click", renderStarterPlan);
-  document.getElementById("pro").addEventListener("click", renderProPlan);
-  document.getElementById("power").addEventListener("click", renderPowerPlan);
-  document.getElementById("lifetime").addEventListener("click", renderLifeTimePlan);
+  document.getElementById("starter").addEventListener("click", showStarterPlan);
+  document.getElementById("pro").addEventListener("click", showProPlan);
+  document.getElementById("power").addEventListener("click", showPowerPlan);
+  document.getElementById("lifetime").addEventListener("click", showLifeTimePlan);
 
   document.getElementById("backAllPlan").addEventListener("click", () => {
     renderFreePlan(remaining, timeLeft)
@@ -332,7 +331,7 @@ function renderAllPlan(){
 }
 
 
-function renderStarterPlan(){
+function showStarterPlan(){
   const app = document.getElementById("app");
   app.innerHTML = `
     <h2>Starter</h2>
@@ -352,7 +351,7 @@ function renderStarterPlan(){
   document.getElementById("back").addEventListener("click", renderAllPlan);
 }
 
-function renderProPlan(){
+function showProPlan(){
   const app = document.getElementById("app");
   app.innerHTML = `
     <h2>Pro</h2>
@@ -373,7 +372,7 @@ function renderProPlan(){
   document.getElementById("back").addEventListener("click", renderAllPlan);
 }
 
-function renderPowerPlan(){
+function showPowerPlan(){
   const app = document.getElementById("app");
   app.innerHTML = `
     <h2>Power</h2>
@@ -394,7 +393,7 @@ function renderPowerPlan(){
   document.getElementById("back").addEventListener("click", renderAllPlan);
 }
 
-function renderLifeTimePlan(){
+function showLifeTimePlan(){
   const app = document.getElementById("app");
   app.innerHTML = `
     <h2>LifeTime</h2>

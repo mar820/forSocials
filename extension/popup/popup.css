@@ -209,7 +209,7 @@ p strong{
 
 /* ---------------------------------------------- */
 
-.container-holding-allPlan{
+/* .container-holding-allPlan{
   border-radius: 8px;
   border: 1px solid #023b79;
   background-color: #03112c;
@@ -225,9 +225,65 @@ p strong{
   width: 150px;
   font-size: 16px;
   font-weight: 400;
+} */
+
+.container-holding-allPlan {
+  border-radius: 12px;
+  border: 1px solid rgba(2, 59, 121, 0.6);
+  background: linear-gradient(135deg, #03112c 0%, #052354 100%);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+  text-align: center;
+  color: #f1f4ff;
 }
 
-.container-holding-info{
+.container-holding-allPlan:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(135deg, #041a3d 0%, #073877 100%);
+}
+
+.container-holding-allPlan p {
+  font-size: 16px;
+  color: #c9d6f0;
+  margin: 4px 0;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.container-holding-allPlan p strong {
+  color: #4ea3ff;
+  font-weight: 600;
+}
+
+.container-holding-allPlan button {
+  width: 160px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  background: #007bff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.container-holding-allPlan button:hover {
+  background: #005ed1;
+  transform: scale(1.03);
+}
+
+/* ---------------------------------------------- */
+
+
+/* .container-holding-info{
   border-radius: 8px;
   background-color: #94afe4;
   display: flex;
@@ -237,17 +293,58 @@ p strong{
 }
 
 .container-holding-info p {
-  color: #333; /* Darker text for contrast */
-  font-size: 18px; /* Slightly smaller for readability */
+  color: #333;
+  font-size: 18px;
   font-weight: 500;
   line-height: 1.6;
-  margin: 8px 0; /* Space between lines */
+  margin: 8px 0;
   transition: color 0.2s;
 }
 
 .container-holding-info p:hover {
-  color: #007bff; /* Highlight on hover */
+  color: #007bff;
+} */
+
+.container-holding-info {
+  border-radius: 12px;
+  background: linear-gradient(135deg, #a5bff2 0%, #c7d8f8 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+  text-align: center;
+  max-width: 360px;
+  margin: 0 auto;
 }
+
+.container-holding-info:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #9db9ef 0%, #b8cef7 100%);
+}
+
+.container-holding-info p {
+  color: #222;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 6px 0;
+  transition: color 0.2s ease;
+}
+
+.container-holding-info p strong {
+  color: #004aad;
+  font-weight: 600;
+}
+
+.container-holding-info p:hover {
+  color: #0056d6;
+}
+/* ---------------------------------------------- */
+
 
 .container-holding-buttons-Plan{
   display: flex;
