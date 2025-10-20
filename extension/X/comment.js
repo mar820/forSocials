@@ -34,17 +34,28 @@ async function getAIReply(userComment){
 }
 
 async function waitForToolbar(container) {
-  for (let i = 0; i < 10; i++) {
-    const toolbar = container.querySelector('[data-testid="ScrollSnap-SwipeableList"]');
-    if (toolbar) return toolbar;
+  const possibleSelectors = [
+    '[data-testid="toolBar"]',
+    'div[role="group"][aria-label*="Add"]',
+    '[data-testid="ScrollSnap-SwipeableList"]' // fallback
+  ];
+
+  for (let i = 0; i < 15; i++) {
+    for (const sel of possibleSelectors) {
+      const toolbar = container.querySelector(sel);
+      if (toolbar) return toolbar;
+    }
     await new Promise(r => setTimeout(r, 300));
   }
+
+  console.log("❌ No toolbar found in composer", container);
   return null;
 }
 
 async function addRewriteButtonX(tweetComposer) {
   const toolbar = await waitForToolbar(tweetComposer);
   if (!toolbar) return;
+  console.log("Toolbar found?", !!toolbar, tweetComposer);
 
   if (toolbar.querySelector(".ai-rewrite-button")) return; // avoid duplicates
 
