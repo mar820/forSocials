@@ -48,7 +48,7 @@ async function waitForToolbar(container) {
                     || document.querySelector(sel);
       if (toolbar) return toolbar;
     }
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r => setTimeout(r, 1000));
   }
 
   console.log("❌ Still no toolbar found near composer:", container);
