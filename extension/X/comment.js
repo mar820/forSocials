@@ -62,15 +62,24 @@ async function addRewriteButtonX(tweetComposer) {
   button.type = "button";
   button.innerText = "Rewrite ✍️";
   button.classList.add("ai-rewrite-button");
+  button.disabled = true; // start disabled
+  button.style.opacity = 0.5;
+
+  const tweetBox = tweetComposer.querySelector('[data-testid^="tweetTextarea"]') || document.querySelector('[data-testid^="tweetTextarea"]');
+  if (!tweetBox) return;
+
+  // Update button state based on textarea content
+  function updateButtonState() {
+    const hasText = tweetBox.innerText.trim().length > 0;
+    button.disabled = !hasText;
+    button.style.opacity = hasText ? 1 : 0.5;
+    button.style.cursor = hasText ? 'pointer' : 'not-allowed';
+  }
+
+  tweetBox.addEventListener('input', updateButtonState);
+  updateButtonState(); // initial check
 
   button.onclick = async () => {
-    let tweetBox = tweetComposer.querySelector('[data-testid^="tweetTextarea"]') || document.querySelector('[data-testid^="tweetTextarea"]');
-    // const tweetBox = tweetComposer.querySelector('[data-testid="tweetTextarea_0"], [data-testid="tweetTextarea_1"]');
-    if (!tweetBox) {
-      alert("Could not find the tweet box!");
-      return;
-    }
-
     const userComment = tweetBox.innerText.trim();
     if (!userComment) {
       alert("Please type something before rewriting!");
@@ -93,29 +102,22 @@ async function addRewriteButtonX(tweetComposer) {
       const rewritten = replies[0];
 
       tweetBox.focus();
+      tweetBox.dispatchEvent(new InputEvent('beforeinput', {
+        bubbles: true,
+        cancelable: true,
+        inputType: 'deleteContent',
+      }));
 
-      document.execCommand("selectAll", false, null);
-      document.execCommand("insertText", false, rewritten);
+      // Insert new text via execCommand
+      document.execCommand('insertText', false, rewritten);
 
-      // Trigger React’s internal update system
-      // const inputEvent = new InputEvent("input", {
-      //   bubbles: true,
-      //   cancelable: true,
-      //   inputType: "insertText",
-      //   data: rewritten,
-      // });
-      // tweetBox.dispatchEvent(inputEvent);
-
-      // // Also fire keyboard events (Draft.js sometimes requires them)
-      // ["keydown", "keypress", "keyup"].forEach((type) => {
-      //   const e = new KeyboardEvent(type, {
-      //     bubbles: true,
-      //     cancelable: true,
-      //     key: "a",
-      //     code: "KeyA",
-      //   });
-      //   tweetBox.dispatchEvent(e);
-      // });
+      // Fire input event to make React re-render
+      tweetBox.dispatchEvent(new InputEvent('input', {
+        bubbles: true,
+        cancelable: true,
+        inputType: 'insertText',
+        data: rewritten,
+      }));
     }
 
     button.innerText = "Rewrite ✍️";
