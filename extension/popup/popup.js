@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     await fetchAndPrepareUserData(token);
-    renderFreePlan(remaining, timeLeft);
+    renderCurrentPlan(currentUser.subscription_plan, remaining, timeLeft);
   } catch (err) {
     console.error(err);
     renderHome();
