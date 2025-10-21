@@ -97,168 +97,51 @@ async function addRewriteButtonX(tweetComposer) {
     }
     else if (replies && replies.length > 0) {
 
-      const rewrittenText = replies[0];
-
-      if (typeof rewrittenText !== "string" || rewrittenText.length === 0) {
-        alert("❌ Invalid rewritten text received");
-        button.disabled = false;
-        button.innerText = "Rewrite ✍️";
-        return;
-      }
-
       tweetBox.focus();
       tweetBox.click();
 
-      // small helper to wait a tick
-      const tick = (ms = 20) => new Promise(r => setTimeout(r, ms));
+      // Clear existing text via an InputEvent
+      tweetBox.textContent = "";
+      tweetBox.dispatchEvent(new InputEvent("input", {
+        bubbles: true,
+        cancelable: true,
+        inputType: "deleteContentBackward",
+        data: null
+      }));
 
-      let succeeded = false;
-      let lastError = null;
+      // Insert new rewritten text
+      const rewrittenText = replies[0];
+      const dataTransfer = new DataTransfer();
+      dataTransfer.setData("text/plain", rewrittenText);
 
-      // Strategy 1: Select all via Range + execCommand('insertText')
-      try {
-        const sel = window.getSelection();
-        const range = document.createRange();
-        range.selectNodeContents(tweetBox);
-        sel.removeAllRanges();
-        sel.addRange(range);
+      tweetBox.dispatchEvent(new InputEvent("beforeinput", {
+        bubbles: true,
+        cancelable: true,
+        inputType: "insertText",
+        data: rewrittenText,
+        dataTransfer
+      }));
 
-        // Delete current contents first (helps React's model)
-        document.execCommand("delete", false, null);
+      // Update visible text (X sometimes ignores `beforeinput` display)
+      tweetBox.textContent = rewrittenText;
 
-        // Insert new text
-        const ok = document.execCommand("insertText", false, rewrittenText);
-        await tick(30); // let browser/React breathe
-        if (ok) {
-          // dispatch final input event to sync frameworks
-          tweetBox.dispatchEvent(new InputEvent("input", {
-            bubbles: true,
-            cancelable: true,
-            inputType: "insertFromPaste",
-            data: rewrittenText
-          }));
-          succeeded = true;
-        } else {
-          // not supported in some browsers — not fatal
-          lastError = new Error("execCommand('insertText') returned false");
-        }
-      } catch (err) {
-        lastError = err;
-        console.warn("Strategy 1 failed:", err);
-      }
+      // Final input sync event
+      tweetBox.dispatchEvent(new InputEvent("input", {
+        bubbles: true,
+        cancelable: true,
+        inputType: "insertText",
+        data: rewrittenText
+      }));
 
-      // Strategy 2: beforeinput + input (without dataTransfer) — gentler than before
-      if (!succeeded) {
-        try {
-          // clear via deleteContentBackward to signal deletion
-          tweetBox.textContent = "";
-          tweetBox.dispatchEvent(new InputEvent("input", {
-            bubbles: true,
-            cancelable: true,
-            inputType: "deleteContentBackward",
-            data: null
-          }));
-
-          // dispatch beforeinput (no dataTransfer)
-          const before = new InputEvent("beforeinput", {
-            bubbles: true,
-            cancelable: true,
-            inputType: "insertText",
-            data: rewrittenText
-          });
-          const dispatchedBefore = tweetBox.dispatchEvent(before);
-
-          // update visible DOM (some builds ignore beforeinput)
-          tweetBox.textContent = rewrittenText;
-
-          // final input event
-          tweetBox.dispatchEvent(new InputEvent("input", {
-            bubbles: true,
-            cancelable: true,
-            inputType: "insertText",
-            data: rewrittenText
-          }));
-
-          await tick(30);
-          succeeded = true;
-        } catch (err) {
-          lastError = err;
-          console.warn("Strategy 2 failed:", err);
-        }
-      }
-
-      // Strategy 3: Clipboard + paste fallback (if allowed)
-      if (!succeeded && navigator.clipboard && navigator.clipboard.writeText) {
-        try {
-          await navigator.clipboard.writeText(rewrittenText);
-          // select all
-          const sel = window.getSelection();
-          const range = document.createRange();
-          range.selectNodeContents(tweetBox);
-          sel.removeAllRanges();
-          sel.addRange(range);
-
-          // dispatch paste event — many sites listen to paste
-          const pasteEvent = new ClipboardEvent("paste", {
-            bubbles: true,
-            cancelable: true,
-            clipboardData: new DataTransfer()
-          });
-          // some browsers won't allow setting clipboardData programmatically; rely on document.execCommand('paste')
-          const pasted = tweetBox.dispatchEvent(pasteEvent);
-          // also try execCommand('paste') as fallback
-          try { document.execCommand("paste"); } catch(e) {}
-          await tick(50);
-
-          // sync input event
-          tweetBox.dispatchEvent(new InputEvent("input", { bubbles: true, cancelable: true }));
-          succeeded = true;
-        } catch (err) {
-          lastError = err;
-          console.warn("Strategy 3 (clipboard) failed:", err);
-        }
-      }
-
-      // Strategy 4: Last-resort: set textContent + keyboard event synth
-      if (!succeeded) {
-        try {
-          tweetBox.textContent = rewrittenText;
-
-          tweetBox.dispatchEvent(new InputEvent("input", {
-            bubbles: true,
-            cancelable: true,
-            inputType: "insertText",
-            data: rewrittenText
-          }));
-
-          // synthesize a quick keydown/keyup to nudge React
-          ["keydown", "keyup"].forEach(type => {
-            const e = new KeyboardEvent(type, { bubbles: true, cancelable: true, key: "a", code: "KeyA" });
-            tweetBox.dispatchEvent(e);
-          });
-
-          await tick(30);
-          succeeded = true;
-        } catch (err) {
-          lastError = err;
-          console.error("Strategy 4 failed too:", err);
-        }
-      }
-
-      // Finalize & report
-      if (!succeeded) {
-        console.error("All insertion strategies failed. Last error:", lastError);
-        // Show a helpful message to the user and keep button usable
-        alert("❌ Could not insert rewritten text cleanly. Check console for details.");
-        button.disabled = false;
-        button.innerText = "Rewrite ✍️";
-        return;
-      }
-
-      // success — re-enable button
-      button.innerText = "Rewrite ✍️";
-      button.disabled = false;
-
+      ['keydown', 'keyup', 'keypress'].forEach(type => {
+        const e = new KeyboardEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          key: 'a',
+          code: 'KeyA',
+        });
+        replyBox.dispatchEvent(e);
+      });
     }
 
     button.innerText = "Rewrite ✍️";
