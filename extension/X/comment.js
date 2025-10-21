@@ -66,13 +66,15 @@ async function addRewriteButtonX(tweetComposer) {
   button.onclick = async () => {
 
     const tweetBox = document.querySelector('[data-testid^="tweetTextarea"] div[contenteditable="true"]');
-    
-    const userComment = tweetBox.tagName === "TEXTAREA" ? tweetBox.value.trim() : tweetBox.textContent.trim();
+
+    // const userComment = tweetBox.tagName === "TEXTAREA" ? tweetBox.value.trim() : tweetBox.textContent.trim();
+     const userComment = tweetBox.textContent.trim();
     if (!userComment) {
       alert("Please make sure you already have a comment writen!");
       return;
     }
 
+    button.innerText = "Rewriting...";
     const { replies, error } = await getAIReply(userComment);
 
 
@@ -96,17 +98,17 @@ async function addRewriteButtonX(tweetComposer) {
       }
     }
     else if (replies && replies.length > 0) {
-      button.innerText = "Rewriting...";
-
       const rewritten = replies[0];
 
-      tweetBox.focus();
-      tweetBox.click();
+      const range = document.createRange();
+      range.selectNodeContents(tweetBox);
+      range.deleteContents();
 
-      document.execCommand("selectAll", false, null);
+      // Insert new text node
+      tweetBox.focus();
       document.execCommand("insertText", false, rewritten);
 
-      // Fire an InputEvent
+      // Dispatch a proper React-compatible InputEvent
       const inputEvent = new InputEvent("input", {
         bubbles: true,
         cancelable: true,
@@ -115,18 +117,19 @@ async function addRewriteButtonX(tweetComposer) {
       });
       tweetBox.dispatchEvent(inputEvent);
 
-      // Fire key events to trigger React internal state
-      ['keydown', 'keyup', 'keypress'].forEach(type => {
+      // Fire key events (some versions of X need these to sync)
+      ["keydown", "keyup", "keypress"].forEach(type => {
         const e = new KeyboardEvent(type, {
           bubbles: true,
           cancelable: true,
-          key: 'a',
-          code: 'KeyA',
+          key: "a",
+          code: "KeyA",
         });
         tweetBox.dispatchEvent(e);
       });
 
-      tweetBox.dispatchEvent(inputEvent);
+      // Small delay to ensure React updates its internal state
+      await new Promise(r => setTimeout(r, 100));
     }
 
     button.innerText = "Rewrite ✍️";
