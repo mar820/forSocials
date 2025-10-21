@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 function renderHome(){
   const app = document.getElementById("app");
   app.innerHTML = `
-    <h3>Welcome to <strong>ReplyRiser</strong></h3>
+    <h3>Welcome to <strong>ForSocials</strong></h3>
     <div class="container-holding-buttons">
       <button id="login">Log In</button>
       <button id="signup">Sign Up</button>
