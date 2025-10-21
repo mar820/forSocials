@@ -308,8 +308,6 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-renderCurrentPlan(currentUser.subscription_plan, remaining, timeLeft);
-
 
 // function renderFreePlan(remaining, timeLeft){
 //   const app = document.getElementById("app");
