@@ -111,7 +111,7 @@ async function addRewriteButtonX(tweetComposer) {
         inputType: "insertText",
         data: rewritten,
       });
-      replyBox.dispatchEvent(inputEvent);
+      tweetBox.dispatchEvent(inputEvent);
 
       // Fire key events to trigger React internal state
       ['keydown', 'keyup', 'keypress'].forEach(type => {
@@ -121,10 +121,10 @@ async function addRewriteButtonX(tweetComposer) {
           key: 'a',
           code: 'KeyA',
         });
-        replyBox.dispatchEvent(e);
+        tweetBox.dispatchEvent(e);
       });
 
-      replyBox.dispatchEvent(inputEvent);
+      tweetBox.dispatchEvent(inputEvent);
 
       await new Promise(r => setTimeout(r, 80));
     }
