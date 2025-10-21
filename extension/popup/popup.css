@@ -5,7 +5,7 @@ body {
   background: #0f1a25;
   color: #ffffff;
   width: 320px;
-  min-height: 310px;
+  min-height: 330px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -14,7 +14,7 @@ body {
 #app {
   padding: 20px;
   width: 100%;
-  height: 300px;
+  height: 320px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -87,7 +87,8 @@ p strong{
 #backAllPlan{
   margin-top: 10px;
   margin-bottom: 10px;
-  background-color: #254c9a;
+  /* background-color: #254c9a; */
+  background: #2563eb;
   border: 1px solid #072444;
   color: #ffffff;
   font-weight: 500;
@@ -129,37 +130,6 @@ p strong{
 }
 
 /* ---------------------------------------------- */
-/* .container-holding-buttons-freePlan{
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.container-holding-p-freePlan{
-  border-radius: 8px;
-  background-color: #94afe4;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  row-gap: -10px;
-  height: 120px;
-}
-
-.container-holding-p-freePlan p{
-  color: #333;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.6;
-  margin: 8px 0;
-  transition: color 0.2s;
-}
-
-.container-holding-p-freePlan p:hover {
-  color: #007bff;
-} */
-
 .container-holding-buttons-freePlan {
   display: flex;
   justify-content: center;
@@ -209,34 +179,15 @@ p strong{
 
 /* ---------------------------------------------- */
 
-/* .container-holding-allPlan{
-  border-radius: 8px;
-  border: 1px solid #023b79;
-  background-color: #03112c;
-  padding: 10px 0px 10px 0px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  row-gap: 8px;
-}
-
-.container-holding-allPlan button{
-  width: 150px;
-  font-size: 16px;
-  font-weight: 400;
-} */
-
 .container-holding-allPlan {
   border-radius: 12px;
   border: 1px solid rgba(2, 59, 121, 0.6);
-  background: linear-gradient(135deg, #03112c 0%, #052354 100%);
-  padding: 20px 16px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  row-gap: 12px;
+  row-gap: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
   text-align: center;
@@ -246,7 +197,6 @@ p strong{
 .container-holding-allPlan:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
-  background: linear-gradient(135deg, #041a3d 0%, #073877 100%);
 }
 
 .container-holding-allPlan p {
@@ -267,43 +217,20 @@ p strong{
   font-size: 15px;
   font-weight: 500;
   color: #fff;
-  background: #007bff;
+  background: linear-gradient(135deg, #7a5cff, #8f73ff);
   border: none;
   border-radius: 8px;
-  padding: 10px 16px;
+  padding: 10px 14px;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.1s ease;
 }
 
 .container-holding-allPlan button:hover {
-  background: #005ed1;
+  background: linear-gradient(135deg, #684aff, #7c62ff);
   transform: scale(1.03);
 }
 
 /* ---------------------------------------------- */
-
-
-/* .container-holding-info{
-  border-radius: 8px;
-  background-color: #94afe4;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.container-holding-info p {
-  color: #333;
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.6;
-  margin: 8px 0;
-  transition: color 0.2s;
-}
-
-.container-holding-info p:hover {
-  color: #007bff;
-} */
 
 .container-holding-info {
   border-radius: 12px;
@@ -316,7 +243,7 @@ p strong{
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
   text-align: center;
-  max-width: 360px;
+  width: 190px;
   margin: 0 auto;
 }
 

@@ -98,7 +98,8 @@ router.post("/signup", async (req, res) => {
 
     // Send email
     await resend.emails.send({
-      from: "ForSocials <noreply@forsocials.com>",
+      // from: "ForSocials <noreply@forsocials.com>",
+      from: "ForSocials <noreply@api.forsocials.com>",
       to: email,
       subject: "Verify your email",
       html: htmlContent
