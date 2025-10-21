@@ -140,7 +140,7 @@ async function addRewriteButtonX(tweetComposer) {
           key: 'a',
           code: 'KeyA',
         });
-        replyBox.dispatchEvent(e);
+        tweetBox.dispatchEvent(e);
       });
     }
 
