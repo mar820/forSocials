@@ -66,8 +66,6 @@ async function addRewriteButtonX(tweetComposer) {
   button.onclick = async () => {
 
     const tweetBox = document.querySelector('[data-testid^="tweetTextarea"] div[contenteditable="true"]');
-
-    // const userComment = tweetBox.tagName === "TEXTAREA" ? tweetBox.value.trim() : tweetBox.textContent.trim();
      const userComment = tweetBox.textContent.trim();
     if (!userComment) {
       alert("Please make sure you already have a comment writen!");
@@ -101,29 +99,32 @@ async function addRewriteButtonX(tweetComposer) {
       const rewritten = replies[0];
 
       tweetBox.focus();
+      tweetBox.click();
 
-      let proto = tweetBox;
-      let desc;
-      while (proto && !desc) {
-        desc = Object.getOwnPropertyDescriptor(proto, "textContent");
-        proto = Object.getPrototypeOf(proto);
-      }
+      document.execCommand("selectAll", false, null);
+      document.execCommand("insertText", false, rewritten);
 
-      if (desc && desc.set) {
-        desc.set.call(tweetBox, rewritten);
-      } else {
-        // fallback if somehow no descriptor found
-        tweetBox.textContent = rewritten;
-      }
-
-      // ✅ Notify React’s internal event system
+      // Fire an InputEvent
       const inputEvent = new InputEvent("input", {
         bubbles: true,
         cancelable: true,
         inputType: "insertText",
         data: rewritten,
       });
-      tweetBox.dispatchEvent(inputEvent);
+      replyBox.dispatchEvent(inputEvent);
+
+      // Fire key events to trigger React internal state
+      ['keydown', 'keyup', 'keypress'].forEach(type => {
+        const e = new KeyboardEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          key: 'a',
+          code: 'KeyA',
+        });
+        replyBox.dispatchEvent(e);
+      });
+
+      replyBox.dispatchEvent(inputEvent);
 
       await new Promise(r => setTimeout(r, 80));
     }
