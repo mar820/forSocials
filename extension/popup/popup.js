@@ -286,11 +286,10 @@ function renderSignup(){
   });
 }
 
-
-function renderFreePlan(remaining, timeLeft){
+function renderCurrentPlan(plan, remaining, timeLeft) {
   const app = document.getElementById("app");
   app.innerHTML = `
-    <h2>Plan: Free (Trial)</h2>
+    <h2>Plan: ${capitalize(plan)}</h2>
     <div class="container-holding-p-freePlan">
       <p>AI replies left: <strong>${remaining}</strong></p>
       <p>Time left: ${timeLeft}</p>
@@ -305,7 +304,124 @@ function renderFreePlan(remaining, timeLeft){
   document.getElementById("upgrade").addEventListener("click", renderAllPlan);
 }
 
-function renderAllPlan(){
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+renderCurrentPlan(currentUser.subscription_plan, remaining, timeLeft);
+
+
+// function renderFreePlan(remaining, timeLeft){
+//   const app = document.getElementById("app");
+//   app.innerHTML = `
+//     <h2>Plan: Free (Trial)</h2>
+//     <div class="container-holding-p-freePlan">
+//       <p>AI replies left: <strong>${remaining}</strong></p>
+//       <p>Time left: ${timeLeft}</p>
+//     </div>
+//     <div class="container-holding-buttons-freePlan">
+//       <button id="upgrade">Upgrade</button>
+//       <button id="logout">Log Out</button>
+//     </div>
+//   `;
+
+//   document.getElementById("logout").addEventListener("click", logout);
+//   document.getElementById("upgrade").addEventListener("click", renderAllPlan);
+// }
+
+// function renderStarterPlan(remaining, timeLeft){
+//   const app = document.getElementById("app");
+//   app.innerHTML = `
+//     <h2>Plan: Starter</h2>
+//     <div class="container-holding-p-freePlan">
+//       <p>AI replies left: <strong>${remaining}</strong></p>
+//       <p>Time left: ${timeLeft}</p>
+//     </div>
+//     <div class="container-holding-buttons-freePlan">
+//       <button id="upgrade">Upgrade</button>
+//       <button id="logout">Log Out</button>
+//     </div>
+//   `;
+
+//   document.getElementById("logout").addEventListener("click", logout);
+//   document.getElementById("upgrade").addEventListener("click", renderAllPlan);
+// }
+
+// function renderProPlan(remaining, timeLeft){
+//   const app = document.getElementById("app");
+//   app.innerHTML = `
+//     <h2>Plan: Pro</h2>
+//     <div class="container-holding-p-freePlan">
+//       <p>AI replies left: <strong>${remaining}</strong></p>
+//       <p>Time left: ${timeLeft}</p>
+//     </div>
+//     <div class="container-holding-buttons-freePlan">
+//       <button id="upgrade">Upgrade</button>
+//       <button id="logout">Log Out</button>
+//     </div>
+//   `;
+
+//   document.getElementById("logout").addEventListener("click", logout);
+//   document.getElementById("upgrade").addEventListener("click", renderAllPlan);
+// }
+
+// function renderPowerPlan(remaining, timeLeft){
+//   const app = document.getElementById("app");
+//   app.innerHTML = `
+//     <h2>Plan: Power</h2>
+//     <div class="container-holding-p-freePlan">
+//       <p>AI replies left: <strong>${remaining}</strong></p>
+//       <p>Time left: ${timeLeft}</p>
+//     </div>
+//     <div class="container-holding-buttons-freePlan">
+//       <button id="upgrade">Upgrade</button>
+//       <button id="logout">Log Out</button>
+//     </div>
+//   `;
+
+//   document.getElementById("logout").addEventListener("click", logout);
+//   document.getElementById("upgrade").addEventListener("click", renderAllPlan);
+// }
+
+// function renderLifeTimePlan(remaining, timeLeft){
+//   const app = document.getElementById("app");
+//   app.innerHTML = `
+//     <h2>Plan: Lifetime</h2>
+//     <div class="container-holding-p-freePlan">
+//       <p>AI replies left: <strong>${remaining}</strong></p>
+//       <p>Time left: ${timeLeft}</p>
+//     </div>
+//     <div class="container-holding-buttons-freePlan">
+//       <button id="upgrade">Upgrade</button>
+//       <button id="logout">Log Out</button>
+//     </div>
+//   `;
+
+//   document.getElementById("logout").addEventListener("click", logout);
+//   document.getElementById("upgrade").addEventListener("click", renderAllPlan);
+// }
+
+function showPlanForUpgrade(plan, price, requests) {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <h2>${capitalize(plan)}</h2>
+    <div class="container-holding-info">
+      <p>Price: $${price}</p>
+      <p>Time: 1 month</p>
+      <p>AI requests: ${requests}</p>
+    </div>
+    <div class="container-holding-buttons-Plan">
+      <button id="start">Start</button>
+      <button id="back">Back</button>
+    </div>
+  `;
+
+  document.getElementById("start").addEventListener("click", () => createStripePayment(plan));
+  document.getElementById("back").addEventListener("click", renderAllPlan);
+}
+
+
+function renderAllPlan() {
   const app = document.getElementById("app");
   app.innerHTML = `
     <h2>Upgrade Plan</h2>
@@ -315,104 +431,100 @@ function renderAllPlan(){
       <button id="power">Power</button>
       <button id="lifetime">Lifetime</button>
     </div>
-
     <button id="backAllPlan">Back</button>
   `;
 
-  document.getElementById("starter").addEventListener("click", showStarterPlan);
-  document.getElementById("pro").addEventListener("click", showProPlan);
-  document.getElementById("power").addEventListener("click", showPowerPlan);
-  document.getElementById("lifetime").addEventListener("click", showLifeTimePlan);
+  document.getElementById("starter").addEventListener("click", () => showPlanForUpgrade("starter", 3, 500));
+  document.getElementById("pro").addEventListener("click", () => showPlanForUpgrade("pro", 10, 2500));
+  document.getElementById("power").addEventListener("click", () => showPlanForUpgrade("power", 20, 10000));
+  document.getElementById("lifetime").addEventListener("click", () => showPlanForUpgrade("lifetime", 699, "2500 per month"));
 
   document.getElementById("backAllPlan").addEventListener("click", () => {
-    renderFreePlan(remaining, timeLeft)
+    renderCurrentPlan(currentUser.subscription_plan, remaining, timeLeft);
   });
-
 }
+// function showStarterPlan(){
+//   const app = document.getElementById("app");
+//   app.innerHTML = `
+//     <h2>Starter</h2>
 
+//     <div class="container-holding-info">
+//       <p>Price: 3$</p>
+//       <p>Time: 1 month</p>
+//       <p>Ai requests: 500</p>
+//     </div>
+//     <div class="container-holding-buttons-Plan">
+//       <button id="start">Start</button>
+//       <button id="back">Back</button>
+//     </div>
+//   `;
 
-function showStarterPlan(){
-  const app = document.getElementById("app");
-  app.innerHTML = `
-    <h2>Starter</h2>
+//   document.getElementById("start").addEventListener("click", () => createStripePayment("starter"));
+//   document.getElementById("back").addEventListener("click", renderAllPlan);
+// }
 
-    <div class="container-holding-info">
-      <p>Price: 3$</p>
-      <p>Time: 1 month</p>
-      <p>Ai requests: 500</p>
-    </div>
-    <div class="container-holding-buttons-Plan">
-      <button id="start">Start</button>
-      <button id="back">Back</button>
-    </div>
-  `;
+// function showProPlan(){
+//   const app = document.getElementById("app");
+//   app.innerHTML = `
+//     <h2>Pro</h2>
 
-  document.getElementById("start").addEventListener("click", () => createStripePayment("starter"));
-  document.getElementById("back").addEventListener("click", renderAllPlan);
-}
+//     <div class="container-holding-info">
+//       <p>Price: 10$</p>
+//       <p>Time: 1 month</p>
+//       <p>Ai requests: 2500</p>
+//     </div>
 
-function showProPlan(){
-  const app = document.getElementById("app");
-  app.innerHTML = `
-    <h2>Pro</h2>
+//     <div class="container-holding-buttons-Plan">
+//       <button id="start">Start</button>
+//       <button id="back">Back</button>
+//     </div>
+//   `;
 
-    <div class="container-holding-info">
-      <p>Price: 10$</p>
-      <p>Time: 1 month</p>
-      <p>Ai requests: 2500</p>
-    </div>
+//   document.getElementById("start").addEventListener("click", () => createStripePayment("pro"));
+//   document.getElementById("back").addEventListener("click", renderAllPlan);
+// }
 
-    <div class="container-holding-buttons-Plan">
-      <button id="start">Start</button>
-      <button id="back">Back</button>
-    </div>
-  `;
+// function showPowerPlan(){
+//   const app = document.getElementById("app");
+//   app.innerHTML = `
+//     <h2>Power</h2>
 
-  document.getElementById("start").addEventListener("click", () => createStripePayment("pro"));
-  document.getElementById("back").addEventListener("click", renderAllPlan);
-}
+//     <div class="container-holding-info">
+//       <p>Price: 20$</p>
+//       <p>Time: 1 month</p>
+//       <p>Ai requests: 10000</p>
+//     </div>
 
-function showPowerPlan(){
-  const app = document.getElementById("app");
-  app.innerHTML = `
-    <h2>Power</h2>
+//     <div class="container-holding-buttons-Plan">
+//       <button id="start">Start</button>
+//       <button id="back">Back</button>
+//     </div>
+//   `;
 
-    <div class="container-holding-info">
-      <p>Price: 20$</p>
-      <p>Time: 1 month</p>
-      <p>Ai requests: 10000</p>
-    </div>
+//   document.getElementById("start").addEventListener("click", () => createStripePayment("power"));
+//   document.getElementById("back").addEventListener("click", renderAllPlan);
+// }
 
-    <div class="container-holding-buttons-Plan">
-      <button id="start">Start</button>
-      <button id="back">Back</button>
-    </div>
-  `;
+// function showLifeTimePlan(){
+//   const app = document.getElementById("app");
+//   app.innerHTML = `
+//     <h2>LifeTime</h2>
 
-  document.getElementById("start").addEventListener("click", () => createStripePayment("power"));
-  document.getElementById("back").addEventListener("click", renderAllPlan);
-}
+//     <div class="container-holding-info">
+//       <p>Price: 699$</p>
+//       <p>Time: 1 month</p>
+//       <p>Ai requests: Unlimited</p>
+//     </div>
 
-function showLifeTimePlan(){
-  const app = document.getElementById("app");
-  app.innerHTML = `
-    <h2>LifeTime</h2>
+//     <div class="container-holding-buttons-Plan">
+//       <button id="start">Start</button>
+//       <button id="back">Back</button>
+//     </div>
+//   `;
 
-    <div class="container-holding-info">
-      <p>Price: 699$</p>
-      <p>Time: 1 month</p>
-      <p>Ai requests: Unlimited</p>
-    </div>
-
-    <div class="container-holding-buttons-Plan">
-      <button id="start">Start</button>
-      <button id="back">Back</button>
-    </div>
-  `;
-
-  document.getElementById("start").addEventListener("click", () => createStripePayment("lifetime"));
-  document.getElementById("back").addEventListener("click", renderAllPlan);
-}
+//   document.getElementById("start").addEventListener("click", () => createStripePayment("lifetime"));
+//   document.getElementById("back").addEventListener("click", renderAllPlan);
+// }
 
 
 async function logout() {

@@ -222,36 +222,66 @@ router.get("/me", authenticateToken, async (req, res) => {
     const [rows] = await db.query("SELECT id, email, subscription_plan, trial_start FROM users WHERE id = ?", [req.user.id]);
     if (rows.length === 0) return res.status(404).json({ message: "User not found" });
 
+    const user = rows[0];
+
     const [countResult] = await db.query(
       `SELECT COUNT(*) as used
       FROM ai_request_logs
       WHERE user_id = ?
         AND MONTH(created_at) = MONTH(CURDATE())
         AND YEAR(created_at) = YEAR(CURDATE())`,
-      [req.user.id]
+      [user.id]
     );
-
-    const user = rows[0];
-
-    let timeLeft = null;
-    if (user.subscription_plan === "free" && user.trial_start) {
-      const now = Date.now();
-      const trialStart = new Date(user.trial_start).getTime();
-      const msLeft = Math.max(0, (3 * 24 * 60 * 60 * 1000) - (now - trialStart)); // 3 days = 72h = 259200000 ms
-
-      const totalMinutes = Math.floor(msLeft / (1000 * 60));
-      const days = Math.floor(totalMinutes / (60 * 24));
-      const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-      const minutes = totalMinutes % 60;
-
-      timeLeft = `${days}d ${hours}h ${minutes}m`;
-    }
 
     const usedRequests = countResult[0].used;
 
-        res.json({
-      ...rows[0],
+    const PLAN_LIMITS = {
+      free: 20,
+      starter: 500,
+      pro: 2500,
+      power: 10000,
+      lifetime: 2500 // or set 'unlimited' if you prefer
+    };
+
+    // 4️⃣ Determine trial / time left
+    let timeLeft = null;
+    let remaining = PLAN_LIMITS[user.subscription_plan] - usedRequests;
+
+    if (user.subscription_plan === "free") {
+      if (user.trial_start) {
+        const now = Date.now();
+        const trialStart = new Date(user.trial_start).getTime();
+        const msLeft = Math.max(0, (3 * 24 * 60 * 60 * 1000) - (now - trialStart));
+
+        if (msLeft <= 0) {
+          remaining = 0;
+          timeLeft = "Trial expired — upgrade to continue";
+        } else {
+          const totalMinutes = Math.floor(msLeft / (1000 * 60));
+          const days = Math.floor(totalMinutes / (60 * 24));
+          const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+          const minutes = totalMinutes % 60;
+          timeLeft = `${days}d ${hours}h ${minutes}m`;
+        }
+      } else {
+        timeLeft = "3d 0h 0m";
+      }
+    }else {
+      const now = new Date();
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+      const msLeft = endOfMonth - now;
+      const days = Math.floor(msLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((msLeft / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((msLeft / (1000 * 60)) % 60);
+      timeLeft = `${days}d ${hours}h ${minutes}m`;
+    }
+
+    remaining = Math.max(0, remaining);
+
+    res.json({
+      ...user,
       ai_requests_used_last_month: usedRequests,
+      remaining_ai_requests: remaining,
       time_left_for_ai_requests: timeLeft
     });
   } catch (err) {

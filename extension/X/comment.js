@@ -1,126 +1,126 @@
-async function getAIReply(userComment){
-  const blocks = [];
-  if (userComment) blocks.push({ type: "text", text: userComment });
+// async function getAIReply(userComment){
+//   const blocks = [];
+//   if (userComment) blocks.push({ type: "text", text: userComment });
 
-  const site = (() => {
-    const hostname = window.location.hostname;
-    if (hostname.includes("linkedin.com")) return "linkedin";
-    if (hostname.includes("x.com")) return "x";
-    return "unknown";
-  })();
+//   const site = (() => {
+//     const hostname = window.location.hostname;
+//     if (hostname.includes("linkedin.com")) return "linkedin";
+//     if (hostname.includes("x.com")) return "x";
+//     return "unknown";
+//   })();
 
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage({ action: "getAiReply", blocks, platform: site }, (data) => {
+//   return new Promise((resolve) => {
+//     chrome.runtime.sendMessage({ action: "getAiReply", blocks, platform: site }, (data) => {
 
-      if (!data) return resolve({ error: "No response" });
+//       if (!data) return resolve({ error: "No response" });
 
-      // ⚠️ Detect backend trial expiration
-      if (data.error && data.error.includes("Free trial expired")) {
-        resolve({ error: "trial_expired" });
-      } else if (data.error && data.error.includes("AI request limit")) {
-        resolve({ error: "limit_reached" });
-      } else if (!data?.choices) {
-        resolve({ error: "no_choices" });
-      } else {
-        const replies = data.choices[0].message.content
-          .split("\n")
-          .filter(line => line.trim() !== "");
-        resolve({ replies });
-      }
-    });
-  });
-}
+//       // ⚠️ Detect backend trial expiration
+//       if (data.error && data.error.includes("Free trial expired")) {
+//         resolve({ error: "trial_expired" });
+//       } else if (data.error && data.error.includes("AI request limit")) {
+//         resolve({ error: "limit_reached" });
+//       } else if (!data?.choices) {
+//         resolve({ error: "no_choices" });
+//       } else {
+//         const replies = data.choices[0].message.content
+//           .split("\n")
+//           .filter(line => line.trim() !== "");
+//         resolve({ replies });
+//       }
+//     });
+//   });
+// }
 
-async function waitForToolbar(container) {
-  const selectors = [
-    '[data-testid="toolBar"]',
-    'div[role="group"][aria-label*="Add"]',
-    'div[data-testid="toolBar"]',
-    '[data-testid="ScrollSnap-SwipeableList"]'
-  ];
+// async function waitForToolbar(container) {
+//   const selectors = [
+//     '[data-testid="toolBar"]',
+//     'div[role="group"][aria-label*="Add"]',
+//     'div[data-testid="toolBar"]',
+//     '[data-testid="ScrollSnap-SwipeableList"]'
+//   ];
 
-  for (let i = 0; i < 15; i++) {
-    for (const sel of selectors) {
-      const toolbar = container.closest("form")?.querySelector(sel)
-                    || container.parentElement?.querySelector(sel)
-                    || document.querySelector(sel);
-      if (toolbar) return toolbar;
-    }
-    await new Promise(r => setTimeout(r, 1000));
-  }
+//   for (let i = 0; i < 15; i++) {
+//     for (const sel of selectors) {
+//       const toolbar = container.closest("form")?.querySelector(sel)
+//                     || container.parentElement?.querySelector(sel)
+//                     || document.querySelector(sel);
+//       if (toolbar) return toolbar;
+//     }
+//     await new Promise(r => setTimeout(r, 1000));
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
-async function addRewriteButtonX(tweetComposer) {
-  const toolbar = await waitForToolbar(tweetComposer);
-  if (!toolbar) return;
+// async function addRewriteButtonX(tweetComposer) {
+//   const toolbar = await waitForToolbar(tweetComposer);
+//   if (!toolbar) return;
 
-  if (toolbar.querySelector(".ai-rewrite-button")) return;
+//   if (toolbar.querySelector(".ai-rewrite-button")) return;
 
-  const button = document.createElement("button");
-  button.type = "button";
-  button.innerText = "Rewrite ✍️";
-  button.classList.add("ai-rewrite-button");
+//   const button = document.createElement("button");
+//   button.type = "button";
+//   button.innerText = "Rewrite ✍️";
+//   button.classList.add("ai-rewrite-button");
 
-  button.onclick = async () => {
+//   button.onclick = async () => {
 
-    const tweetBox = document.querySelector('[data-testid^="tweetTextarea"] div[contenteditable="true"]');
-     const userComment = tweetBox.textContent.trim();
-    if (!userComment) {
-      alert("Please make sure you already have a comment writen!");
-      return;
-    }
+//     const tweetBox = document.querySelector('[data-testid^="tweetTextarea"] div[contenteditable="true"]');
+//      const userComment = tweetBox.textContent.trim();
+//     if (!userComment) {
+//       alert("Please make sure you already have a comment writen!");
+//       return;
+//     }
 
-    button.innerText = "Rewriting...";
-    const { replies, error } = await getAIReply(userComment);
+//     button.innerText = "Rewriting...";
+//     const { replies, error } = await getAIReply(userComment);
 
 
-    if (error) {
-      switch(error) {
-        case "trial_expired":
-          alert("🚫 Trial expired — Upgrade to use AI");
-          button.style.opacity = "0.6";
-          button.style.cursor = "not-allowed";
-          button.disabled = true;
-          return;
-        case "limit_reached":
-          alert("⚠️ Plan limit reached — Upgrade to re-write");
-          button.style.opacity = "0.6";
-          button.disabled = true;
-          return;
-        default:
-          alert("❌ AI failed — Try again");
-          button.disabled = false;
-          return;
-      }
-    }
-    else if (replies && replies.length > 0) {
+//     if (error) {
+//       switch(error) {
+//         case "trial_expired":
+//           alert("🚫 Trial expired — Upgrade to use AI");
+//           button.style.opacity = "0.6";
+//           button.style.cursor = "not-allowed";
+//           button.disabled = true;
+//           return;
+//         case "limit_reached":
+//           alert("⚠️ Plan limit reached — Upgrade to re-write");
+//           button.style.opacity = "0.6";
+//           button.disabled = true;
+//           return;
+//         default:
+//           alert("❌ AI failed — Try again");
+//           button.disabled = false;
+//           return;
+//       }
+//     }
+//     else if (replies && replies.length > 0) {
 
-      tweetBox.focus();
-      tweetBox.click();
+//       tweetBox.focus();
+//       tweetBox.click();
 
-      // Final input sync event
-      tweetBox.dispatchEvent(new InputEvent("input", {
-        bubbles: true,
-        cancelable: true,
-        inputType: "insertText",
-        data: rewrittenText
-      }));
+//       // Final input sync event
+//       tweetBox.dispatchEvent(new InputEvent("input", {
+//         bubbles: true,
+//         cancelable: true,
+//         inputType: "insertText",
+//         data: rewrittenText
+//       }));
 
-      ['keydown', 'keyup', 'keypress'].forEach(type => {
-        const e = new KeyboardEvent(type, {
-          bubbles: true,
-          cancelable: true,
-          key: 'a',
-          code: 'KeyA',
-        });
-        tweetBox.dispatchEvent(e);
-      });
-    }
+//       ['keydown', 'keyup', 'keypress'].forEach(type => {
+//         const e = new KeyboardEvent(type, {
+//           bubbles: true,
+//           cancelable: true,
+//           key: 'a',
+//           code: 'KeyA',
+//         });
+//         tweetBox.dispatchEvent(e);
+//       });
+//     }
 
-    button.innerText = "Rewrite ✍️";
-  };
+//     button.innerText = "Rewrite ✍️";
+//   };
 
-  toolbar.appendChild(button);
-}
+//   toolbar.appendChild(button);
+// }
