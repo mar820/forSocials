@@ -102,12 +102,21 @@ async function addRewriteButtonX(tweetComposer) {
 
       tweetBox.focus();
 
-      // Use the property setter so React sees the change
-      const proto = Object.getPrototypeOf(tweetBox);
-      const desc = Object.getOwnPropertyDescriptor(proto, "textContent");
-      desc.set.call(tweetBox, rewritten);
+      let proto = tweetBox;
+      let desc;
+      while (proto && !desc) {
+        desc = Object.getOwnPropertyDescriptor(proto, "textContent");
+        proto = Object.getPrototypeOf(proto);
+      }
 
-      // Dispatch the exact event React listens for
+      if (desc && desc.set) {
+        desc.set.call(tweetBox, rewritten);
+      } else {
+        // fallback if somehow no descriptor found
+        tweetBox.textContent = rewritten;
+      }
+
+      // ✅ Notify React’s internal event system
       const inputEvent = new InputEvent("input", {
         bubbles: true,
         cancelable: true,
@@ -115,7 +124,6 @@ async function addRewriteButtonX(tweetComposer) {
         data: rewritten,
       });
       tweetBox.dispatchEvent(inputEvent);
-      // --------------------------------------
 
       await new Promise(r => setTimeout(r, 80));
     }
