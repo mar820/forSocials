@@ -100,8 +100,6 @@ async function addRewriteButtonX(tweetComposer) {
       tweetBox.focus();
       tweetBox.click();
 
-      tweetBox.textContent = rewrittenText;
-
       // Final input sync event
       tweetBox.dispatchEvent(new InputEvent("input", {
         bubbles: true,
