@@ -101,22 +101,19 @@ async function addRewriteButtonX(tweetComposer) {
       if (typeof rewritten !== "string" || rewritten.length === 0) {
         console.error("Invalid rewritten text:", rewritten);
         alert("❌ Invalid rewritten text received");
-        button.innerText = "Rewrite ✍️";
-        button.disabled = false;
         return;
       }
 
-      // Ensure tweetBox is focused
+      // Focus the tweetBox
       tweetBox.focus();
       tweetBox.click();
 
-      // Select all existing content and replace it
+      // Select all and insert new text
       document.execCommand("selectAll", false, null);
       const inserted = document.execCommand("insertText", false, rewritten);
 
       if (!inserted) {
-        console.warn("Failed to insert text via execCommand");
-        // Fallback: set textContent
+        console.warn("Failed to insert text via execCommand, falling back to textContent");
         tweetBox.textContent = rewritten;
       }
 
@@ -130,37 +127,22 @@ async function addRewriteButtonX(tweetComposer) {
       const inputDispatched = tweetBox.dispatchEvent(inputEvent);
 
       if (!inputDispatched) {
-        console.warn("input event was cancelled");
+        console.warn("Input event was cancelled");
       }
 
-      // Dispatch keyboard events to mimic user input
+      // Dispatch keyboard events
       ["keydown", "keyup", "keypress"].forEach((type) => {
         const e = new KeyboardEvent(type, {
           bubbles: true,
           cancelable: true,
-          key: "a", // Generic key, as in working code
+          key: "a",
           code: "KeyA",
         });
         tweetBox.dispatchEvent(e);
       });
 
-      // Set cursor to the end
-      const range = document.createRange();
-      const selection = window.getSelection();
-      range.selectNodeContents(tweetBox);
-      range.collapse(false);
-      selection.removeAllRanges();
-      selection.addRange(range);
-
-      // Dispatch a change event for React
-      const changeEvent = new Event("change", {
-        bubbles: true,
-        cancelable: true,
-      });
-      tweetBox.dispatchEvent(changeEvent);
-
-      // Small delay to allow React to process
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      // Dispatch input event again (as in working code)
+      tweetBox.dispatchEvent(inputEvent);
     }
 
     button.innerText = "Rewrite ✍️";
