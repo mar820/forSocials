@@ -100,15 +100,14 @@ async function addRewriteButtonX(tweetComposer) {
     else if (replies && replies.length > 0) {
       const rewritten = replies[0];
 
-      const range = document.createRange();
-      range.selectNodeContents(tweetBox);
-      range.deleteContents();
-
-      // Insert new text node
       tweetBox.focus();
-      document.execCommand("insertText", false, rewritten);
 
-      // Dispatch a proper React-compatible InputEvent
+      // Use the property setter so React sees the change
+      const proto = Object.getPrototypeOf(tweetBox);
+      const desc = Object.getOwnPropertyDescriptor(proto, "textContent");
+      desc.set.call(tweetBox, rewritten);
+
+      // Dispatch the exact event React listens for
       const inputEvent = new InputEvent("input", {
         bubbles: true,
         cancelable: true,
@@ -116,20 +115,9 @@ async function addRewriteButtonX(tweetComposer) {
         data: rewritten,
       });
       tweetBox.dispatchEvent(inputEvent);
+      // --------------------------------------
 
-      // Fire key events (some versions of X need these to sync)
-      ["keydown", "keyup", "keypress"].forEach(type => {
-        const e = new KeyboardEvent(type, {
-          bubbles: true,
-          cancelable: true,
-          key: "a",
-          code: "KeyA",
-        });
-        tweetBox.dispatchEvent(e);
-      });
-
-      // Small delay to ensure React updates its internal state
-      await new Promise(r => setTimeout(r, 100));
+      await new Promise(r => setTimeout(r, 80));
     }
 
     button.innerText = "Rewrite ✍️";
