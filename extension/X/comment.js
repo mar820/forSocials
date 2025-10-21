@@ -100,29 +100,6 @@ async function addRewriteButtonX(tweetComposer) {
       tweetBox.focus();
       tweetBox.click();
 
-      // Clear existing text via an InputEvent
-      tweetBox.textContent = "";
-      tweetBox.dispatchEvent(new InputEvent("input", {
-        bubbles: true,
-        cancelable: true,
-        inputType: "deleteContentBackward",
-        data: null
-      }));
-
-      // Insert new rewritten text
-      const rewrittenText = replies[0];
-      const dataTransfer = new DataTransfer();
-      dataTransfer.setData("text/plain", rewrittenText);
-
-      tweetBox.dispatchEvent(new InputEvent("beforeinput", {
-        bubbles: true,
-        cancelable: true,
-        inputType: "insertText",
-        data: rewrittenText,
-        dataTransfer
-      }));
-
-      // Update visible text (X sometimes ignores `beforeinput` display)
       tweetBox.textContent = rewrittenText;
 
       // Final input sync event
