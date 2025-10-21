@@ -98,6 +98,25 @@ async function addRewriteButtonX(tweetComposer) {
     else if (replies && replies.length > 0) {
       const rewritten = replies[0];
 
+      tweetBox.focus();
+
+      // Clear existing content
+      tweetBox.textContent = "";
+
+      // Simulate user input with beforeinput and input events
+      const beforeInputEvent = new InputEvent("beforeinput", {
+        bubbles: true,
+        cancelable: true,
+        inputType: "insertText",
+        data: rewritten,
+      });
+      const beforeInputDispatched = tweetBox.dispatchEvent(beforeInputEvent);
+
+      if (!beforeInputDispatched) {
+        console.warn("beforeinput event was cancelled");
+      }
+
+      // Set the new text
       tweetBox.textContent = rewritten;
 
       // Dispatch input event
@@ -109,8 +128,6 @@ async function addRewriteButtonX(tweetComposer) {
       });
       tweetBox.dispatchEvent(inputEvent);
 
-      // Set cursor to end
-      tweetBox.focus();
       const range = document.createRange();
       const selection = window.getSelection();
       range.selectNodeContents(tweetBox);
@@ -118,7 +135,14 @@ async function addRewriteButtonX(tweetComposer) {
       selection.removeAllRanges();
       selection.addRange(range);
 
-      await new Promise(r => setTimeout(r, 100));
+      const changeEvent = new Event("change", {
+        bubbles: true,
+        cancelable: true,
+      });
+      tweetBox.dispatchEvent(changeEvent);
+
+      // Small delay to allow React to process
+      await new Promise((resolve) => setTimeout(resolve, 150));
     }
 
     button.innerText = "Rewrite ✍️";
