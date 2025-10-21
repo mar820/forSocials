@@ -96,53 +96,42 @@ async function addRewriteButtonX(tweetComposer) {
       }
     }
     else if (replies && replies.length > 0) {
-      const rewritten = replies[0];
 
-      if (typeof rewritten !== "string" || rewritten.length === 0) {
-        console.error("Invalid rewritten text:", rewritten);
-        alert("❌ Invalid rewritten text received");
-        return;
-      }
-
-      // Focus the tweetBox
       tweetBox.focus();
       tweetBox.click();
 
-      // Select all and insert new text
-      document.execCommand("selectAll", false, null);
-      const inserted = document.execCommand("insertText", false, rewritten);
+      // Clear existing text via an InputEvent
+      tweetBox.textContent = "";
+      tweetBox.dispatchEvent(new InputEvent("input", {
+        bubbles: true,
+        cancelable: true,
+        inputType: "deleteContentBackward",
+        data: null
+      }));
 
-      if (!inserted) {
-        console.warn("Failed to insert text via execCommand, falling back to textContent");
-        tweetBox.textContent = rewritten;
-      }
+      // Insert new rewritten text
+      const rewrittenText = replies[0];
+      const dataTransfer = new DataTransfer();
+      dataTransfer.setData("text/plain", rewrittenText);
 
-      // Dispatch input event
-      const inputEvent = new InputEvent("input", {
+      tweetBox.dispatchEvent(new InputEvent("beforeinput", {
         bubbles: true,
         cancelable: true,
         inputType: "insertText",
-        data: rewritten,
-      });
-      const inputDispatched = tweetBox.dispatchEvent(inputEvent);
+        data: rewrittenText,
+        dataTransfer
+      }));
 
-      if (!inputDispatched) {
-        console.warn("Input event was cancelled");
-      }
+      // Update visible text (X sometimes ignores `beforeinput` display)
+      tweetBox.textContent = rewrittenText;
 
-      // Dispatch keyboard events
-      ["keydown", "keyup", "keypress"].forEach((type) => {
-        const e = new KeyboardEvent(type, {
-          bubbles: true,
-          cancelable: true,
-          key: "a",
-          code: "KeyA",
-        });
-        tweetBox.dispatchEvent(e);
-      });
-
-      // Dispatch input event again (as in working code)
-      tweetBox.dispatchEvent(inputEvent);
+      // Final input sync event
+      tweetBox.dispatchEvent(new InputEvent("input", {
+        bubbles: true,
+        cancelable: true,
+        inputType: "insertText",
+        data: rewrittenText
+      }));
     }
 
     button.innerText = "Rewrite ✍️";
