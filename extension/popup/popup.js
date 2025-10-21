@@ -70,7 +70,7 @@ chrome.storage.onChanged.addListener(async (changes, areaName) => {
       try {
         await new Promise(r => setTimeout(r, 150));
         await fetchAndPrepareUserData(changes.token.newValue);
-        renderFreePlan(remaining, timeLeft);
+        renderCurrentPlan(currentUser.subscription_plan, remaining, timeLeft);
       } catch (error) {
         console.error("Error fetching user data after login:", error);
         renderHome();
