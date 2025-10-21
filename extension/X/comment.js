@@ -98,13 +98,9 @@ async function addRewriteButtonX(tweetComposer) {
     else if (replies && replies.length > 0) {
       const rewritten = replies[0];
 
-      tweetBox.focus();
-      tweetBox.click();
+      tweetBox.textContent = rewritten;
 
-      document.execCommand("selectAll", false, null);
-      document.execCommand("insertText", false, rewritten);
-
-      // Fire an InputEvent
+      // Dispatch input event
       const inputEvent = new InputEvent("input", {
         bubbles: true,
         cancelable: true,
@@ -113,20 +109,16 @@ async function addRewriteButtonX(tweetComposer) {
       });
       tweetBox.dispatchEvent(inputEvent);
 
-      // Fire key events to trigger React internal state
-      ['keydown', 'keyup', 'keypress'].forEach(type => {
-        const e = new KeyboardEvent(type, {
-          bubbles: true,
-          cancelable: true,
-          key: 'a',
-          code: 'KeyA',
-        });
-        tweetBox.dispatchEvent(e);
-      });
+      // Set cursor to end
+      tweetBox.focus();
+      const range = document.createRange();
+      const selection = window.getSelection();
+      range.selectNodeContents(tweetBox);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
 
-      tweetBox.dispatchEvent(inputEvent);
-
-      await new Promise(r => setTimeout(r, 80));
+      await new Promise(r => setTimeout(r, 100));
     }
 
     button.innerText = "Rewrite ✍️";
