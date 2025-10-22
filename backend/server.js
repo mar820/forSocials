@@ -13,13 +13,13 @@ const logger = require('./logger');
 
 const allowedOrigins = [
   "https://api.forsocials.com",
-  "chrome-extension://fhcbgnpgdmeckccdnhhnkpgdemiendbf",
+  /^chrome-extension:\/\/.*$/
 ];
 
 app.use(cors({
   origin: function(origin, callback) {
     // for Chrome extension, origin might be undefined in some fetch contexts
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.some(o => (o instanceof RegExp ? o.test(origin) : o === origin))) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
