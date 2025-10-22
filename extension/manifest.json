@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "AI-powered assistant that helps you craft quick, thoughtful replies on LinkedIn and X to grow your network effortlessly.",
   "permissions": ["activeTab", "scripting", "storage"],
-  "host_permissions": ["https://api.4socials.com/*"],
+  "host_permissions": ["https://api.forsocials.com/*"],
   "background": {
     "service_worker": "background.js"
   },
