@@ -29,8 +29,8 @@
     "default_title": "For Socials"
   },
   "icons": {
-    "16": "icons/fs.png",
-    "48": "icons/fs.png",
-    "128": "icons/fs.png"
+    "16": "icons/fss.png",
+    "48": "icons/fss.png",
+    "128": "icons/fss.png"
   }
 }
