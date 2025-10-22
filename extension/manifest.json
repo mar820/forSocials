@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "LinkedIn smart AI replies",
+  "name": "AI Reply Guy for X(Twitter) and Linkedin",
   "version": "1.0",
-  "description": "LinkedIn extension providing short and smart replies for easier and faster connection",
+  "description": "AI-powered assistant that helps you craft quick, thoughtful replies on LinkedIn and X to grow your network effortlessly.",
   "permissions": ["activeTab", "scripting", "storage"],
-  "host_permissions": ["https://api.openai.com/*", "https://api.4socials.com/*"],
+  "host_permissions": ["https://api.4socials.com/*"],
   "background": {
     "service_worker": "background.js"
   },
@@ -17,13 +17,20 @@
     {
       "matches": [
         "*://www.x.com/*",
-        "*://x.com/*"
+        "*://x.com/*",
+        "*://*.twitter.com/*"
       ],
       "js": ["X/content.js"],
       "css": ["X/content.css"]
     }
   ],
   "action": {
-    "default_popup": "popup/popup.html"
+    "default_popup": "popup/popup.html",
+    "default_title": "For Socials"
+  },
+  "icons": {
+    "16": "icons/fs.png",
+    "48": "icons/fs.png",
+    "128": "icons/fs.png"
   }
 }
