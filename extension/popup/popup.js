@@ -71,6 +71,7 @@ chrome.storage.onChanged.addListener(async (changes, areaName) => {
         await new Promise(r => setTimeout(r, 150));
         await fetchAndPrepareUserData(changes.token.newValue);
         renderCurrentPlan(currentUser.subscription_plan, remaining, timeLeft);
+        console.log(currentUser.subscription_plan);
       } catch (error) {
         console.error("Error fetching user data after login:", error);
         renderHome();
@@ -90,6 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     await fetchAndPrepareUserData(token);
     renderCurrentPlan(currentUser.subscription_plan, remaining, timeLeft);
+    console.log(currentUser.subscription_plan);
   } catch (err) {
     console.error(err);
     renderHome();
@@ -289,6 +291,7 @@ function renderSignup(){
 function renderCurrentPlan(plan, remaining, timeLeft) {
   const app = document.getElementById("app");
   app.innerHTML = `
+    <h3><strong>ForSocials</strong></h3>
     <h2>Plan: ${capitalize(plan)}</h2>
     <div class="container-holding-p-freePlan">
       <p>AI replies left: <strong>${remaining}</strong></p>

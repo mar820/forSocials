@@ -65,6 +65,64 @@ app.use(cookieParser());
 // ✅ 4. Your routes go last
 app.use("/", authRoutes);
 
+app.get("/success", (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Payment Successful</title>
+        <style>
+          body {
+            background: #f8fafc;
+            color: #0f172a;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+          }
+          .card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            max-width: 420px;
+          }
+          h2 {
+            color: #2563eb;
+          }
+          p {
+            margin: 20px 0;
+            color: #475569;
+          }
+          a.button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #2563eb;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+          }
+          a.button:hover {
+            background: #1d4ed8;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h2>🎉 Payment Successful!</h2>
+          <p>Your plan has been upgraded successfully. You can close this tab and continue using <strong>ForSocials</strong>.</p>
+          <a class="button" href="https://forsocials.com" target="_blank">Go Back to App</a>
+        </div>
+      </body>
+    </html>
+  `);
+});
 
 app.post("/createCheckoutSession", authenticateToken, async (req, res) => {
   const { plan } = req.body;
