@@ -219,7 +219,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/me", authenticateToken, async (req, res) => {
   try {
-    const [rows] = await db.query("SELECT id, email, subscription_plan, trial_start FROM users WHERE id = ?", [req.user.id]);
+    const [rows] = await db.query("SELECT id, email, subscription_plan, trial_start, subscription_start, subscription_end FROM users WHERE id = ?", [req.user.id]);
     if (rows.length === 0) return res.status(404).json({ message: "User not found" });
 
     const user = rows[0];
