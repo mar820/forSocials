@@ -55,7 +55,7 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
     subscriptionEnd.setDate(subscriptionStart.getDate() + 30);
 
     await db.query(
-      "UPDATE users SET subscription_plan = ?, ai_requests_used = 0, subscription_start = ?, subscription_end = ?, subscription_active = 1 WHERE id = ?",
+      "UPDATE users SET subscription_plan = ?, ai_requests_used = 0, subscription_start = ?, subscription_end = ? WHERE id = ?",
       [plan, subscriptionStart, subscriptionEnd, userId]
     );
   }
