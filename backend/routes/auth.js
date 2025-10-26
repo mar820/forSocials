@@ -227,10 +227,8 @@ router.get("/me", authenticateToken, async (req, res) => {
     const [countResult] = await db.query(
       `SELECT COUNT(*) as used
       FROM ai_request_logs
-      WHERE user_id = ?
-        AND MONTH(created_at) = MONTH(CURDATE())
-        AND YEAR(created_at) = YEAR(CURDATE())`,
-      [user.id]
+      WHERE user_id = ? AND created_at >= ?`,
+      [user.id, user.subscription_start]
     );
 
     const usedRequests = countResult[0].used;
@@ -243,31 +241,13 @@ router.get("/me", authenticateToken, async (req, res) => {
       lifetime: 2500 // or set 'unlimited' if you prefer
     };
 
-    // 4️⃣ Determine trial / time left
-    let timeLeft = null;
-    let remaining = PLAN_LIMITS[user.subscription_plan] - usedRequests;
+    const remaining = PLAN_LIMITS[user.subscription_plan] - usedRequests;
 
-    // Use subscription_end if available
-    const now = Date.now();
-    let msLeft;
-
-    if (user.subscription_end) {
-      msLeft = new Date(user.subscription_end).getTime() - now;
-    } else if (user.subscription_plan === "free" && user.trial_start) {
-      const trialStart = new Date(user.trial_start).getTime();
-      msLeft = (3 * 24 * 60 * 60 * 1000) - (now - trialStart);
-    } else {
-      // default to end of month
-      const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 59);
-      msLeft = endOfMonth - now;
-    }
-
-    const days = Math.floor(msLeft / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((msLeft / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((msLeft / (1000 * 60)) % 60);
-    timeLeft = msLeft > 0 ? `${days}d ${hours}h ${minutes}m` : "Expired";
-
-    remaining = Math.max(0, remaining);
+    let msLeft = new Date(user.subscription_end).getTime() - Date.now();
+    const days = Math.floor(msLeft / (1000*60*60*24));
+    const hours = Math.floor((msLeft / (1000*60*60)) % 24);
+    const minutes = Math.floor((msLeft / (1000*60)) % 60);
+    const timeLeft = msLeft > 0 ? `${days}d ${hours}h ${minutes}m` : "Expired";
 
     res.json({
       ...user,
