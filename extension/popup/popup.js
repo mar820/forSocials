@@ -315,6 +315,7 @@ function capitalize(str) {
 function showPlanForUpgrade(plan, price, requests) {
   const app = document.getElementById("app");
   app.innerHTML = `
+    <h3><strong>ForSocials</strong></h3>
     <h2>${capitalize(plan)}</h2>
     <div class="container-holding-info">
       <p>Price: $${price}</p>
@@ -335,6 +336,7 @@ function showPlanForUpgrade(plan, price, requests) {
 function renderAllPlan() {
   const app = document.getElementById("app");
   app.innerHTML = `
+    <h3><strong>ForSocials</strong></h3>
     <h2>Upgrade Plan</h2>
     <div class="container-holding-allPlan">
       <button id="starter">Starter</button>

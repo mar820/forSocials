@@ -49,20 +49,24 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     const { userId, plan } = session.metadata;
+
+    const subscriptionStart = new Date();
+    const subscriptionEnd = new Date();
+    subscriptionEnd.setDate(subscriptionStart.getDate() + 30);
+
     await db.query(
-      "UPDATE users SET subscription_plan = ?, ai_requests_used_last_month = 0, subscription_active = 1 WHERE id = ?",
-      [plan, userId]
+      "UPDATE users SET subscription_plan = ?, ai_requests_used = 0, subscription_start = ?, subscription_end = ?, subscription_active = 1 WHERE id = ?",
+      [plan, subscriptionStart, subscriptionEnd, userId]
     );
   }
 
   res.sendStatus(200);
 });
 
-// ✅ 2. Everything else uses JSON parser (after webhook)
+
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ 4. Your routes go last
 app.use("/", authRoutes);
 
 app.get("/success", (req, res) => {
@@ -117,7 +121,6 @@ app.get("/success", (req, res) => {
         <div class="card">
           <h2>🎉 Payment Successful!</h2>
           <p>Your plan has been upgraded successfully. You can close this tab and continue using <strong>ForSocials</strong>.</p>
-          <a class="button" href="https://forsocials.com" target="_blank">Go Back to App</a>
         </div>
       </body>
     </html>
