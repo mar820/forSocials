@@ -247,34 +247,25 @@ router.get("/me", authenticateToken, async (req, res) => {
     let timeLeft = null;
     let remaining = PLAN_LIMITS[user.subscription_plan] - usedRequests;
 
-    if (user.subscription_plan === "free") {
-      if (user.trial_start) {
-        const now = Date.now();
-        const trialStart = new Date(user.trial_start).getTime();
-        const msLeft = Math.max(0, (3 * 24 * 60 * 60 * 1000) - (now - trialStart));
+    // Use subscription_end if available
+    const now = Date.now();
+    let msLeft;
 
-        if (msLeft <= 0) {
-          remaining = 0;
-          timeLeft = "Trial expired — upgrade to continue";
-        } else {
-          const totalMinutes = Math.floor(msLeft / (1000 * 60));
-          const days = Math.floor(totalMinutes / (60 * 24));
-          const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-          const minutes = totalMinutes % 60;
-          timeLeft = `${days}d ${hours}h ${minutes}m`;
-        }
-      } else {
-        timeLeft = "3d 0h 0m";
-      }
-    }else {
-      const now = new Date();
-      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
-      const msLeft = endOfMonth - now;
-      const days = Math.floor(msLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((msLeft / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((msLeft / (1000 * 60)) % 60);
-      timeLeft = `${days}d ${hours}h ${minutes}m`;
+    if (user.subscription_end) {
+      msLeft = new Date(user.subscription_end).getTime() - now;
+    } else if (user.subscription_plan === "free" && user.trial_start) {
+      const trialStart = new Date(user.trial_start).getTime();
+      msLeft = (3 * 24 * 60 * 60 * 1000) - (now - trialStart);
+    } else {
+      // default to end of month
+      const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 59);
+      msLeft = endOfMonth - now;
     }
+
+    const days = Math.floor(msLeft / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((msLeft / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((msLeft / (1000 * 60)) % 60);
+    timeLeft = msLeft > 0 ? `${days}d ${hours}h ${minutes}m` : "Expired";
 
     remaining = Math.max(0, remaining);
 
