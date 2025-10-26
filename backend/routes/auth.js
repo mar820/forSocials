@@ -224,30 +224,56 @@ router.get("/me", authenticateToken, async (req, res) => {
 
     const user = rows[0];
 
+    const sinceDate = user.subscription_plan === "free" && user.trial_start
+      ? user.trial_start
+      : user.subscription_start || new Date(0);
+
     const [countResult] = await db.query(
       `SELECT COUNT(*) as used
-      FROM ai_request_logs
-      WHERE user_id = ? AND created_at >= ?`,
-      [user.id, user.subscription_start]
+       FROM ai_request_logs
+       WHERE user_id = ? AND created_at >= ?`,
+      [user.id, sinceDate]
     );
 
     const usedRequests = countResult[0].used;
+    let remaining = PLAN_LIMITS[user.subscription_plan] - usedRequests;
+    remaining = Math.max(0, remaining);
 
-    const PLAN_LIMITS = {
-      free: 20,
-      starter: 500,
-      pro: 2500,
-      power: 10000,
-      lifetime: 2500 // or set 'unlimited' if you prefer
-    };
+    let timeLeft;
 
-    const remaining = PLAN_LIMITS[user.subscription_plan] - usedRequests;
+    if (user.subscription_plan === "free") {
+      // 🆓 Trial logic
+      if (user.trial_start) {
+        const now = Date.now();
+        const trialStart = new Date(user.trial_start).getTime();
+        const msLeft = Math.max(0, (3 * 24 * 60 * 60 * 1000) - (now - trialStart));
 
-    let msLeft = new Date(user.subscription_end).getTime() - Date.now();
-    const days = Math.floor(msLeft / (1000*60*60*24));
-    const hours = Math.floor((msLeft / (1000*60*60)) % 24);
-    const minutes = Math.floor((msLeft / (1000*60)) % 60);
-    const timeLeft = msLeft > 0 ? `${days}d ${hours}h ${minutes}m` : "Expired";
+        if (msLeft <= 0) {
+          remaining = 0;
+          timeLeft = "Trial expired — upgrade to continue";
+        } else {
+          const totalMinutes = Math.floor(msLeft / (1000 * 60));
+          const days = Math.floor(totalMinutes / (60 * 24));
+          const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+          const minutes = totalMinutes % 60;
+          timeLeft = `${days}d ${hours}h ${minutes}m`;
+        }
+      } else {
+        timeLeft = "3d 0h 0m";
+      }
+    } else {
+      // 💳 Paid plan logic
+      const now = Date.now();
+      const end = user.subscription_end
+        ? new Date(user.subscription_end).getTime()
+        : new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getTime();
+      const msLeft = Math.max(0, end - now);
+
+      const days = Math.floor(msLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((msLeft / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((msLeft / (1000 * 60)) % 60);
+      timeLeft = msLeft > 0 ? `${days}d ${hours}h ${minutes}m` : "Expired";
+    }
 
     res.json({
       ...user,
