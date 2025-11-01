@@ -147,7 +147,6 @@ p strong{
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
   width: 90%;
   max-width: 340px;
-  /* gap: 30px; */
   row-gap: 9px;
   margin: 0 auto;
   text-align: center;
@@ -187,7 +186,6 @@ p strong{
 
 .container-holding-allPlan {
   border-radius: 12px;
-  border: 1px solid rgba(2, 59, 121, 0.6);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -198,11 +196,6 @@ p strong{
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
   text-align: center;
   color: #f1f4ff;
-}
-
-.container-holding-allPlan:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
 }
 
 .container-holding-allPlan p {
@@ -240,13 +233,12 @@ p strong{
 
 .container-holding-info {
   border-radius: 12px;
-  background: linear-gradient(135deg, #a5bff2 0%, #c7d8f8 100%);
+  border: 1px solid rgba(2, 59, 121, 0.6);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
   text-align: center;
   width: 190px;
@@ -255,12 +247,10 @@ p strong{
 
 .container-holding-info:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, #9db9ef 0%, #b8cef7 100%);
 }
 
 .container-holding-info p {
-  color: #222;
+  color: #ffffff;
   font-size: 17px;
   font-weight: 500;
   line-height: 1.5;
