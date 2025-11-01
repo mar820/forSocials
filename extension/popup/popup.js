@@ -292,10 +292,14 @@ function renderCurrentPlan(plan, remaining, timeLeft) {
   const app = document.getElementById("app");
   app.innerHTML = `
     <h3><strong>ForSocials</strong></h3>
-    <h2>Plan: ${capitalize(plan)}</h2>
     <div class="container-holding-p-freePlan">
-      <p>AI replies left: <strong>${remaining}</strong></p>
-      <p>Time left: ${timeLeft}</p>
+      <div class="container-holding-h2">
+        <h2>Plan: ${capitalize(plan)}</h2>
+      </div>
+      <div class="container-holdinginfo">
+        <p>AI replies left: <strong>${remaining}</strong></p>
+        <p>Time left: ${timeLeft}</p>
+      </div>
     </div>
     <div class="container-holding-buttons-freePlan">
       <button id="upgrade">Upgrade</button>
@@ -316,7 +320,6 @@ function showPlanForUpgrade(plan, price, requests) {
   const app = document.getElementById("app");
   app.innerHTML = `
     <div>
-      <h3><strong>ForSocials</strong></h3>
       <h2>${capitalize(plan)}</h2>
       <div class="container-holding-info">
         <p>Price: $${price}</p>

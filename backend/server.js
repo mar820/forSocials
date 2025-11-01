@@ -133,10 +133,10 @@ app.post("/createCheckoutSession", authenticateToken, async (req, res) => {
 
   // Map plans to Stripe price IDs
   const priceMap = {
-    starter: "price_1SGescRMU1ty7g0VKoemj8yq",
-    pro: "price_1SGeteRMU1ty7g0VPtVVtAmZ",
-    power: "price_1SGeu3RMU1ty7g0VgkDaKbep",
-    lifetime: "price_1SGeuORMU1ty7g0Veoh99Wj5"
+    starter: "price_1SNx6GII6zOwVcyT3XveVJCl",
+    pro: "price_1SNx6EII6zOwVcyTaIwJGXhX",
+    power: "price_1SNx6DII6zOwVcyTm2PFN3yp",
+    lifetime: "price_1SNx6AII6zOwVcyTcEtqNm1W"
   };
 
   try {

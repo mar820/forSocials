@@ -52,7 +52,7 @@ p {
 }
 
 p strong{
-  color: #3468d8;
+  color: #2563eb;
   font-size: 18px;
 }
 
@@ -86,7 +86,6 @@ p strong{
 #backAllPlan{
   margin-top: 10px;
   margin-bottom: 10px;
-  /* background-color: #254c9a; */
   background: #2563eb;
   border: 1px solid #072444;
   color: #ffffff;
@@ -133,24 +132,40 @@ p strong{
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-top: 24px;
+  margin-top: 20px;
   flex-wrap: wrap;
 }
 
 .container-holding-p-freePlan {
   border-radius: 12px;
-  background: linear-gradient(135deg, #a5bff2 0%, #c7d8f8 100%);
+  border: 1px solid rgba(2, 59, 121, 0.6);
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   flex-direction: column;
   padding: 20px 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
   width: 90%;
   max-width: 340px;
+  /* gap: 30px; */
+  row-gap: 9px;
   margin: 0 auto;
   text-align: center;
+}
+
+.container-holding-h2{
+  display: block;
+  justify-content: center;
+  align-items: start;
+}
+
+.container-holding-p-freePlan p {
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 6px 0;
+  transition: color 0.2s ease;
 }
 
 .container-holding-p-freePlan:hover {
@@ -158,14 +173,6 @@ p strong{
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
-.container-holding-p-freePlan p {
-  color: #222;
-  font-size: 17px;
-  font-weight: 500;
-  line-height: 1.5;
-  margin: 6px 0;
-  transition: color 0.2s ease;
-}
 
 .container-holding-p-freePlan p strong {
   color: #004aad;
