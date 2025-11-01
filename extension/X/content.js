@@ -2,7 +2,6 @@
 
   await new Promise(r => setTimeout(r, 500));
 
-  // 1️⃣ Check login first
   chrome.runtime.sendMessage({ action: "checkLogin" }, async (response) => {
     if (!response?.loggedIn) {
       console.log("❌ User not logged in → AI features disabled");
@@ -16,7 +15,6 @@
       const blocks = [{ type: "text", text: tweetText }];
       if (quotedText) blocks.push({ type: "text", text: quotedText });
       images.forEach(url => blocks.push({ type: "image_url", url }));
-      // if (tweetImageUrl && tweetImageUrl.length) { tweetImageUrl.forEach(image => { userPost.push({type: "image_url", image_url: {url: image}}); }) }
 
 
       const site = (() => {
@@ -62,7 +60,6 @@
       button.innerText = "💡 AI Reply";
       button.className = "ai-reply-button";
 
-      // const replyButton = postElement.querySelector('button[data-testid="reply"], div[data-testid="reply"]');
       const replyButton = postElement.querySelector('button[aria-label*="Reply"][data-testid="reply"]');
       if (!replyButton) return;
 
@@ -79,10 +76,7 @@
         const quotedText = quotedEl ? quotedEl.innerText.slice(0, 500) : "";
 
         const imageEls = postElement.querySelectorAll('div[data-testid="tweetPhoto"] img, div[data-testid="card.wrapper"] img');
-        console.log("I am reading the image:", imageEls);
         const images = Array.from(imageEls).map(img => img.src);
-
-        console.log("Found Images:", images);
 
         const aiResult = await getAiReply(tweetText, quotedText, images);
 
@@ -179,11 +173,6 @@
 
     const observer = new MutationObserver(() => {
       document.querySelectorAll("article").forEach(post => addReplyButton(post));
-
-      // document.querySelectorAll('[data-testid="tweetTextarea_0"], [data-testid="tweetTextarea_1"]').forEach(textarea => {
-      //   const composer = textarea.closest('div[data-testid="tweetTextarea_0"], div[data-testid="tweetTextarea_1"], form, div');
-      //   if (composer) addRewriteButtonX(composer);
-      // });
     });
 
     observer.observe(document.body, { childList: true, subtree: true });

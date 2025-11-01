@@ -1,8 +1,5 @@
-console.log("🚀 LinkedIn content script loaded");
-
 (async () => {
   await new Promise(r => setTimeout(r, 500));
-  console.log("✅ Logged in → enabling AI reply features");
 
   // We set the image as null so its optional
   async function getAiReplies(postText, urlImage = null){
@@ -126,7 +123,6 @@ console.log("🚀 LinkedIn content script loaded");
   }
 
   chrome.runtime.sendMessage({ action: "checkLogin" }, (response) => {
-    console.log("🧠 checkLogin response from background:", response);
     if (chrome.runtime.lastError) {
       console.error("⚠️ Message error:", chrome.runtime.lastError);
     }
