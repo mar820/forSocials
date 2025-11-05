@@ -211,7 +211,7 @@
       setTimeout(() => {
         showGlobalAlert(alert.message, alert.type);
         chrome.storage.local.remove("pendingAlert");
-      }, 1000); // Delay 1 second
+      }, 300); // Delay 1 second
     }
   });
 

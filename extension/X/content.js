@@ -237,9 +237,11 @@
   // 🌟 3️⃣ After page refresh, check if a pending alert exists
   chrome.storage.local.get("pendingAlert", (data) => {
     const alert = data.pendingAlert;
-    if (alert && Date.now() - alert.timestamp < 7000) { // Only recent (within 7s)
-      showGlobalAlert(alert.message, alert.type);
-      chrome.storage.local.remove("pendingAlert");
+    if (alert && Date.now() - alert.timestamp < 10000) { // Only recent
+      setTimeout(() => {
+        showGlobalAlert(alert.message, alert.type);
+        chrome.storage.local.remove("pendingAlert");
+      }, 300); // Delay 1 second
     }
   });
 

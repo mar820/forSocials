@@ -199,7 +199,9 @@ function renderLogin(){
           });
         });
 
-        showGlobalAlert(data.message, "success", true);
+        chrome.storage.local.set({
+          pendingAlert: { message: data.message, type: "info", timestamp: Date.now() }
+        });
       }else{
         showGlobalAlert(data.message, "success", true);
       }
