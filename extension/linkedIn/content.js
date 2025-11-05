@@ -208,10 +208,8 @@
   chrome.storage.local.get("pendingAlert", (data) => {
     const alert = data.pendingAlert;
     if (alert && Date.now() - alert.timestamp < 10000) { // Only recent
-      setTimeout(() => {
-        showGlobalAlert(alert.message, alert.type);
-        chrome.storage.local.remove("pendingAlert");
-      }, 300); // Delay 1 second
+      showGlobalAlert(alert.message, alert.type);
+      chrome.storage.local.remove("pendingAlert");
     }
   });
 
