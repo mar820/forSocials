@@ -181,7 +181,7 @@ function renderLogin(){
         chrome.storage.local.set({ token: data.token }, () => {
           console.log("JWT saved:", data.token);
         });
-        // renderFreePlan();
+        showGlobalAlert(data.message, "success", true);        // renderFreePlan();
         chrome.tabs.query({ url: "*://*.linkedin.com/*" }, (tabs) => {
           tabs.forEach((tab) => {
             chrome.scripting.executeScript({
@@ -199,10 +199,8 @@ function renderLogin(){
             });
           });
         });
-
-        showGlobalAlert(data.message);
       }else{
-        showGlobalAlert(data.message);
+        showGlobalAlert(data.message, "success", true);
       }
 
     } catch (error) {
