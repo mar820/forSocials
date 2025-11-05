@@ -31,7 +31,7 @@ async function createStripePayment(plan){
     window.open(data.url, "_blank");
   } catch (error) {
     console.error("Stripe Checkout Error:", error);
-    showAutoFadeAlert("Unable to start payment. Try again later.");
+    showGlobalAlert("Unable to start payment. Try again later.");
   }
 }
 
@@ -181,7 +181,7 @@ function renderLogin(){
         chrome.storage.local.set({ token: data.token }, () => {
           console.log("JWT saved:", data.token);
         });
-        showAutoFadeAlert(data.message);
+        showGlobalAlert(data.message);
         // renderFreePlan();
         chrome.tabs.query({ url: "*://*.linkedin.com/*" }, (tabs) => {
           tabs.forEach((tab) => {
@@ -201,12 +201,12 @@ function renderLogin(){
           });
         });
       }else{
-        showAutoFadeAlert(data.message);
+        showGlobalAlert(data.message);
       }
 
     } catch (error) {
       console.error(error);
-      showAutoFadeAlert("An error occurred. Please try again.");
+      showGlobalAlert("An error occurred. Please try again.");
     }
   });
 }
@@ -275,15 +275,15 @@ function renderSignup(){
       const data = await response.json();
 
       if (response.ok) {
-        showAutoFadeAlert(data.message);
+        showGlobalAlert(data.message);
         renderHome();
       }else{
-        showAutoFadeAlert(data.message);
+        showGlobalAlert(data.message);
       }
 
     } catch (error) {
       console.error(error);
-      showAutoFadeAlert("An error occurred. Please try again later.");
+      showGlobalAlert("An error occurred. Please try again later.");
     }
   });
 }
@@ -372,7 +372,7 @@ async function logout() {
     // 🧹 Also remove the local token
     await chrome.storage.local.remove("token");
 
-    showAutoFadeAlert("You logged out from ReplyRiser");
+    showGlobalAlert("You logged out from ReplyRiser");
 
     chrome.tabs.query({ url: "*://*.linkedin.com/*" }, (tabs) => {
       tabs.forEach((tab) => {
@@ -395,7 +395,7 @@ async function logout() {
     // renderHome();
   } catch (error) {
     console.error("Logout failed:", error);
-    showAutoFadeAlert("Logout failed. Please try again.");
+    showGlobalAlert("Logout failed. Please try again.");
   }
 }
 
@@ -411,83 +411,50 @@ async function logout() {
 
 
 // 🌟 Global Floating Alert with Circular Timer
-function showAutoFadeAlert(message, color = "#2563eb", duration = 4000) {
-  const alert = document.createElement("div");
-  alert.className = "ai-alert";
-  alert.innerHTML = `
-    <span class="ai-alert-text">${message}</span>
-    <button class="ai-alert-close" aria-label="Close alert">
-      <svg class="ai-alert-ring" viewBox="0 0 36 36">
-        <circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,0.3)" stroke-width="3" fill="none"/>
-        <circle cx="18" cy="18" r="16" stroke="white" stroke-width="3" fill="none" stroke-dasharray="100" stroke-dashoffset="0" stroke-linecap="round"/>
-      </svg>
-      <span class="ai-alert-x">×</span>
-    </button>
-  `;
+function showGlobalAlert(message, type = "info") {
+  // Remove any existing alerts first
+  const existing = document.getElementById("forsocials-global-alert");
+  if (existing) existing.remove();
 
-  Object.assign(alert.style, {
-    position: "fixed",
-    top: "20px",
-    right: "20px",
-    background: color,
-    color: "white",
-    padding: "12px 16px",
-    borderRadius: "12px",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-    zIndex: 999999,
-    opacity: "1",
-    transition: "opacity 0.5s ease, transform 0.5s ease",
-  });
+  const alert = document.createElement("div");
+  alert.id = "forsocials-global-alert";
+  alert.innerText = message;
+
+  const colors = {
+    success: "#4caf50",
+    error: "#f44336",
+    warning: "#ff9800",
+    info: "#2196f3"
+  };
+
+  alert.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: ${colors[type] || colors.info};
+    color: white;
+    font-weight: 500;
+    padding: 12px 22px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 999999;
+    opacity: 0;
+    transition: opacity 0.4s ease, top 0.4s ease;
+  `;
 
   document.body.appendChild(alert);
 
-  // Animate circular timer
-  const ring = alert.querySelector(".ai-alert-ring circle:nth-child(2)");
-  let start = Date.now();
-  const interval = setInterval(() => {
-    const elapsed = Date.now() - start;
-    const progress = Math.min(elapsed / duration, 1);
-    ring.setAttribute("stroke-dashoffset", 100 - progress * 100);
-    if (progress >= 1) clearInterval(interval);
-  }, 50);
+  // Fade in
+  requestAnimationFrame(() => {
+    alert.style.opacity = "1";
+    alert.style.top = "40px";
+  });
 
-  // Close logic
-  const close = () => {
+  // Auto close after 3s
+  setTimeout(() => {
     alert.style.opacity = "0";
-    alert.style.transform = "translateY(-20px)";
+    alert.style.top = "20px";
     setTimeout(() => alert.remove(), 500);
-  };
-
-  alert.querySelector(".ai-alert-close").onclick = close;
-  setTimeout(close, duration);
+  }, 3000);
 }
-
-// Inject minimal CSS
-const style = document.createElement("style");
-style.textContent = `
-.ai-alert-close {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-}
-.ai-alert-close svg {
-  position: absolute;
-  inset: 0;
-  transform: rotate(-90deg);
-}
-.ai-alert-x {
-  position: relative;
-  z-index: 2;
-  font-size: 14px;
-  line-height: 24px;
-}
-`;
-document.head.appendChild(style);
-// ////////////////////////////////////////////////////////////////
