@@ -148,7 +148,9 @@
     }
   });
 
+  // 🌟 1️⃣ Function that actually shows the alert on the page
   function showGlobalAlert(message, type = "info") {
+    // Remove any existing alerts first
     const existing = document.getElementById("forsocials-global-alert");
     if (existing) existing.remove();
 
@@ -173,7 +175,7 @@
       font-weight: 500;
       padding: 12px 22px;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       z-index: 999999;
       opacity: 0;
       transition: opacity 0.4s ease, top 0.4s ease;
@@ -181,11 +183,13 @@
 
     document.body.appendChild(alert);
 
+    // Fade in
     requestAnimationFrame(() => {
       alert.style.opacity = "1";
       alert.style.top = "40px";
     });
 
+    // Auto close after 3s
     setTimeout(() => {
       alert.style.opacity = "0";
       alert.style.top = "20px";
@@ -194,11 +198,18 @@
   }
 
 
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.action === "showGlobalAlert") {
+      showGlobalAlert(msg.message, msg.type);
+    }
+  });
+
+  // 🌟 3️⃣ After page refresh, check if a pending alert exists
   chrome.storage.local.get("pendingAlert", (data) => {
     const alert = data.pendingAlert;
-    if (alert && Date.now() - alert.timestamp < 5000) { // only recent ones
+    if (alert && Date.now() - alert.timestamp < 7000) { // Only recent (within 7s)
       showGlobalAlert(alert.message, alert.type);
-      chrome.storage.local.remove("pendingAlert"); // clear it after showing
+      chrome.storage.local.remove("pendingAlert");
     }
   });
 
