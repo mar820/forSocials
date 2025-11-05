@@ -178,4 +178,13 @@
     observer.observe(document.body, { childList: true, subtree: true });
 
   });
+
+
+  chrome.storage.local.get("pendingAlert", (data) => {
+    const alert = data.pendingAlert;
+    if (alert && Date.now() - alert.timestamp < 5000) { // only recent ones
+      showGlobalAlert(alert.message, alert.type);
+      chrome.storage.local.remove("pendingAlert"); // clear it after showing
+    }
+  });
 })();

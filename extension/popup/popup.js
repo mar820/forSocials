@@ -275,10 +275,10 @@ function renderSignup(){
       const data = await response.json();
 
       if (response.ok) {
-        showGlobalAlert(data.message);
+        showGlobalAlert(data.message, "success", true);
         renderHome();
       }else{
-        showGlobalAlert(data.message);
+        showGlobalAlert(data.message, "success", true);
       }
 
     } catch (error) {
@@ -372,7 +372,7 @@ async function logout() {
     // 🧹 Also remove the local token
     await chrome.storage.local.remove("token");
 
-    showGlobalAlert("You logged out from ReplyRiser");
+    showGlobalAlert("You logged out from ReplyRiser", "info", true);
 
     chrome.tabs.query({ url: "*://*.linkedin.com/*" }, (tabs) => {
       tabs.forEach((tab) => {
@@ -405,7 +405,15 @@ async function logout() {
 // AUTO CLOSING ALERT
 
 // 🌟 Global Floating Alert with Circular Timer
-function showGlobalAlert(message, type = "info") {
+function showGlobalAlert(message, type = "info", persist = false) {
+  // Optionally store the alert before page refresh
+  if (persist) {
+    chrome.storage.local.set({
+      pendingAlert: { message, type, timestamp: Date.now() }
+    });
+  }
+
+  // Send alert to content script
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (!tabs[0]) return;
     chrome.tabs.sendMessage(tabs[0].id, { action: "showGlobalAlert", message, type });
