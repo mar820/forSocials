@@ -405,7 +405,7 @@ async function logout() {
 // AUTO CLOSING ALERT
 
 // 🌟 Global Floating Alert with Circular Timer
-function showGlobalAlert(message, type = "info", persist = false) {
+function showGlobalAlert(message, type = "info", persist = true) {
   // Optionally store the alert before page refresh
   if (persist) {
     chrome.storage.local.set({
