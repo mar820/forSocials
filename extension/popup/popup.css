@@ -325,3 +325,27 @@ input:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
+
+
+
+/* Style for new alert type */
+.ai-alert-close {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.ai-alert-close svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+.ai-alert-x {
+  position: relative;
+  z-index: 2;
+  font-size: 14px;
+  line-height: 24px;
+}

@@ -31,7 +31,7 @@ async function createStripePayment(plan){
     window.open(data.url, "_blank");
   } catch (error) {
     console.error("Stripe Checkout Error:", error);
-    alert("Unable to start payment. Try again later.");
+    showAutoFadeAlert("Unable to start payment. Try again later.");
   }
 }
 
@@ -181,7 +181,7 @@ function renderLogin(){
         chrome.storage.local.set({ token: data.token }, () => {
           console.log("JWT saved:", data.token);
         });
-        alert(data.message);
+        showAutoFadeAlert(data.message);
         // renderFreePlan();
         chrome.tabs.query({ url: "*://*.linkedin.com/*" }, (tabs) => {
           tabs.forEach((tab) => {
@@ -201,12 +201,12 @@ function renderLogin(){
           });
         });
       }else{
-        alert(data.message);
+        showAutoFadeAlert(data.message);
       }
 
     } catch (error) {
       console.error(error);
-      alert("An error occurred. Please try again.");
+      showAutoFadeAlert("An error occurred. Please try again.");
     }
   });
 }
@@ -275,15 +275,15 @@ function renderSignup(){
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.message);
+        showAutoFadeAlert(data.message);
         renderHome();
       }else{
-        alert(data.message);
+        showAutoFadeAlert(data.message);
       }
 
     } catch (error) {
       console.error(error);
-      alert("An error occurred. Please try again later.");
+      showAutoFadeAlert("An error occurred. Please try again later.");
     }
   });
 }
@@ -372,7 +372,7 @@ async function logout() {
     // 🧹 Also remove the local token
     await chrome.storage.local.remove("token");
 
-    alert("You logged out from ReplyRiser");
+    showAutoFadeAlert("You logged out from ReplyRiser");
 
     chrome.tabs.query({ url: "*://*.linkedin.com/*" }, (tabs) => {
       tabs.forEach((tab) => {
@@ -395,6 +395,99 @@ async function logout() {
     // renderHome();
   } catch (error) {
     console.error("Logout failed:", error);
-    alert("Logout failed. Please try again.");
+    showAutoFadeAlert("Logout failed. Please try again.");
   }
 }
+
+
+
+
+
+
+// ////////////////////////////////////////////////////////////////
+// AUTO CLOSING ALERT
+
+
+
+
+// 🌟 Global Floating Alert with Circular Timer
+function showAutoFadeAlert(message, color = "#2563eb", duration = 4000) {
+  const alert = document.createElement("div");
+  alert.className = "ai-alert";
+  alert.innerHTML = `
+    <span class="ai-alert-text">${message}</span>
+    <button class="ai-alert-close" aria-label="Close alert">
+      <svg class="ai-alert-ring" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,0.3)" stroke-width="3" fill="none"/>
+        <circle cx="18" cy="18" r="16" stroke="white" stroke-width="3" fill="none" stroke-dasharray="100" stroke-dashoffset="0" stroke-linecap="round"/>
+      </svg>
+      <span class="ai-alert-x">×</span>
+    </button>
+  `;
+
+  Object.assign(alert.style, {
+    position: "fixed",
+    top: "20px",
+    right: "20px",
+    background: color,
+    color: "white",
+    padding: "12px 16px",
+    borderRadius: "12px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+    zIndex: 999999,
+    opacity: "1",
+    transition: "opacity 0.5s ease, transform 0.5s ease",
+  });
+
+  document.body.appendChild(alert);
+
+  // Animate circular timer
+  const ring = alert.querySelector(".ai-alert-ring circle:nth-child(2)");
+  let start = Date.now();
+  const interval = setInterval(() => {
+    const elapsed = Date.now() - start;
+    const progress = Math.min(elapsed / duration, 1);
+    ring.setAttribute("stroke-dashoffset", 100 - progress * 100);
+    if (progress >= 1) clearInterval(interval);
+  }, 50);
+
+  // Close logic
+  const close = () => {
+    alert.style.opacity = "0";
+    alert.style.transform = "translateY(-20px)";
+    setTimeout(() => alert.remove(), 500);
+  };
+
+  alert.querySelector(".ai-alert-close").onclick = close;
+  setTimeout(close, duration);
+}
+
+// Inject minimal CSS
+const style = document.createElement("style");
+// style.textContent = `
+// .ai-alert-close {
+//   position: relative;
+//   width: 24px;
+//   height: 24px;
+//   border: none;
+//   border-radius: 50%;
+//   background: transparent;
+//   cursor: pointer;
+// }
+// .ai-alert-close svg {
+//   position: absolute;
+//   inset: 0;
+//   transform: rotate(-90deg);
+// }
+// .ai-alert-x {
+//   position: relative;
+//   z-index: 2;
+//   font-size: 14px;
+//   line-height: 24px;
+// }
+// `;
+document.head.appendChild(style);
+// ////////////////////////////////////////////////////////////////
