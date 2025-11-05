@@ -372,6 +372,12 @@ async function logout() {
     // 🧹 Also remove the local token
     await chrome.storage.local.remove("token");
 
+    // Store the alert for after reload
+    chrome.storage.local.set({
+      pendingAlert: { message: "You logged out from ReplyRiser", type: "info", timestamp: Date.now() }
+    });
+
+
     chrome.tabs.query({ url: "*://*.linkedin.com/*" }, (tabs) => {
       tabs.forEach((tab) => {
         chrome.scripting.executeScript({
@@ -390,7 +396,7 @@ async function logout() {
       });
     });
 
-    showGlobalAlert("You logged out from ReplyRiser", "info", true);
+    // showGlobalAlert("You logged out from ReplyRiser", "info", true);
 
     // renderHome();
   } catch (error) {
