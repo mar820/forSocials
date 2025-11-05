@@ -467,27 +467,27 @@ function showAutoFadeAlert(message, color = "#2563eb", duration = 4000) {
 
 // Inject minimal CSS
 const style = document.createElement("style");
-// style.textContent = `
-// .ai-alert-close {
-//   position: relative;
-//   width: 24px;
-//   height: 24px;
-//   border: none;
-//   border-radius: 50%;
-//   background: transparent;
-//   cursor: pointer;
-// }
-// .ai-alert-close svg {
-//   position: absolute;
-//   inset: 0;
-//   transform: rotate(-90deg);
-// }
-// .ai-alert-x {
-//   position: relative;
-//   z-index: 2;
-//   font-size: 14px;
-//   line-height: 24px;
-// }
-// `;
+style.textContent = `
+.ai-alert-close {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.ai-alert-close svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+.ai-alert-x {
+  position: relative;
+  z-index: 2;
+  font-size: 14px;
+  line-height: 24px;
+}
+`;
 document.head.appendChild(style);
 // ////////////////////////////////////////////////////////////////
